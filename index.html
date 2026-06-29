@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pensacola Card Shows</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='white' stroke='%231A1A2E' stroke-width='4'/%3E%3Cpath d='M2 50 Q2 2 50 2 Q98 2 98 50 Z' fill='%23E53935'/%3E%3Crect x='2' y='45' width='96' height='10' fill='%231A1A2E'/%3E%3Ccircle cx='50' cy='50' r='16' fill='white' stroke='%231A1A2E' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='7' fill='%23E53935'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -54,8 +55,10 @@
   }
 
   html.dark .contact-icon { filter: brightness(0.85); }
+  html.dark .upcoming-badge { background: #D1D5DB; color: #1A1A2E; }
 
-  html.dark footer a { color: var(--muted); }
+  html.dark footer { color: #4B5563; }
+  html.dark footer a { color: #4B5563; }
 
   /* Dark mode toggle button */
   .dark-toggle {
@@ -252,7 +255,7 @@
   </div>
   <div class="count-card">
     <p class="count-label">Live count</p>
-    <p class="count-number">11</p>
+    <p class="count-number">12</p>
     <p class="count-sub">Upcoming shows ready to browse.</p>
   </div>
 </div>
@@ -366,6 +369,19 @@
 
     <div class="show-card">
       <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#09</span></div>
+      <h2 class="show-name">Card Town Pensacola Labor Day Showcase</h2>
+      <div class="show-fields">
+        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Card Town Pensacola Labor Day Showcase</span></div>
+        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Monday, September 7th, 2026</span></div>
+        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">10:00AM to 3:00PM</span></div>
+        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">Pensacola Fairgrounds, 6655 Mobile Hwy, Pensacola, FL 32526</span></div>
+        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value">$5</span></div>
+        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value">$60</span></div>
+      </div>
+    </div>
+
+    <div class="show-card">
+      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#10</span></div>
       <h2 class="show-name">Anchor Up Card Show</h2>
       <div class="show-fields">
         <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Anchor Up Card Show</span></div>
@@ -378,7 +394,7 @@
     </div>
 
     <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#10</span></div>
+      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#11</span></div>
       <h2 class="show-name">DJ's Trade Show</h2>
       <div class="show-fields">
         <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">DJ's Trade Show</span></div>
@@ -391,7 +407,7 @@
     </div>
 
     <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#11</span></div>
+      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#12</span></div>
       <h2 class="show-name">Anchor Up Card Show</h2>
       <div class="show-fields">
         <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Anchor Up Card Show</span></div>
@@ -408,7 +424,7 @@
 
 <section class="add-section">
   <div class="add-card">
-    <h2 class="add-title">Running a show? Get listed. 🎴</h2>
+    <h2 class="add-title">Running a show? Get listed.</h2>
     <p class="add-desc">Submit your event details and we'll get it posted for the whole Gulf Coast community to see.</p>
     <button class="add-btn" onclick="openModal()">+ Add Your Show</button>
   </div>
@@ -486,6 +502,7 @@
     { name: "TheC2Show", date: "August 15, 2026", loc: "D'Iberville High School Gym, Biloxi, MS", lat: 30.5117, lng: -88.9328 },
     { name: "Anchor Up Spectacular", date: "August 22, 2026", loc: "Hilton Garden Inn, Pensacola, FL", lat: 30.4797, lng: -87.2157 },
     { name: "TBD Show", date: "August 22, 2026", loc: "Pensacola Fairgrounds, Pensacola, FL", lat: 30.4720, lng: -87.3090 },
+    { name: "Card Town Pensacola Labor Day Showcase", date: "September 7, 2026", loc: "Pensacola Fairgrounds, Pensacola, FL", lat: 30.4720, lng: -87.3090 },
     { name: "Anchor Up Card Show", date: "October 10, 2026", loc: "VFW Post 706, Pensacola, FL", lat: 30.4280, lng: -87.2840 },
     { name: "DJ's Trade Show", date: "October 3, 2026", loc: "ABBA Shrine, Mobile, AL", lat: 30.6671, lng: -88.2234 },
     { name: "Anchor Up Card Show", date: "November 14, 2026", loc: "VFW Post 706, Pensacola, FL", lat: 30.4255, lng: -87.2870 },
