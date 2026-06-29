@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pensacola Card Shows</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  :root {
+    --bg: #F5F0E8;
+    --card-bg: #FFFFFF;
+    --nav-bg: #FDFAF4;
+    --red: #E53935;
+    --yellow: #FFD600;
+    --blue: #1565C0;
+    --dark: #1A1A2E;
+    --muted: #6B7280;
+    --border: #E5E0D5;
+    --next-bg: #FFF8E1;
+    --next-border: #FFD600;
+    --radius: 18px;
+    --shadow: 0 2px 16px rgba(0,0,0,0.07);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); min-height: 100vh; }
+
+  /* NAV */
+  nav {
+    background: var(--nav-bg); border-bottom: 1px solid var(--border);
+    padding: 0 32px; display: flex; align-items: center; justify-content: space-between;
+    height: 68px; position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .pokeball-icon { width: 44px; height: 44px; border-radius: 10px; background: #fff; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: var(--shadow); }
+  .nav-title { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 18px; color: var(--dark); }
+  .nav-links { display: flex; gap: 10px; align-items: center; }
+  .nav-btn { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13px; padding: 9px 18px; border-radius: 50px; border: 2px solid var(--border); background: transparent; color: var(--dark); cursor: pointer; text-decoration: none; transition: all 0.2s; letter-spacing: 0.03em; text-transform: uppercase; }
+  .nav-btn:hover { background: var(--border); }
+  .nav-btn.active { background: var(--red); border-color: var(--red); color: #fff; }
+
+  /* HERO */
+  .hero { max-width: 1120px; margin: 0 auto; padding: 48px 32px 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+  .hero-eyebrow { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .hero-title { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 56px; line-height: 1.05; color: var(--dark); margin-bottom: 16px; }
+  .hero-desc { font-size: 16px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; max-width: 380px; }
+  .hero-tags { display: flex; gap: 10px; flex-wrap: wrap; }
+  .hero-tag { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13px; padding: 7px 16px; border-radius: 50px; border: 2px solid; }
+  .hero-tag.red { color: var(--red); border-color: var(--red); background: #FFF0F0; }
+  .hero-tag.blue { color: var(--blue); border-color: var(--blue); background: #E3F2FD; }
+  .hero-tag.orange { color: #E65100; border-color: #E65100; background: #FFF3E0; }
+
+  /* MAP */
+  .hero-map-wrap {
+    background: var(--card-bg); border-radius: var(--radius); border: 1px solid var(--border);
+    box-shadow: var(--shadow); height: 320px; overflow: hidden; position: relative;
+  }
+  #hero-map { width: 100%; height: 100%; border-radius: var(--radius); }
+  .map-label {
+    position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+    background: rgba(26,26,46,0.85); color: #fff; font-family: 'Nunito', sans-serif;
+    font-weight: 700; font-size: 11px; padding: 5px 12px; border-radius: 50px;
+    pointer-events: none; z-index: 500; white-space: nowrap; letter-spacing: 0.05em;
+  }
+
+  /* STAT STRIP */
+  .stat-strip { max-width: 1120px; margin: 0 auto 32px; padding: 0 32px; display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+  .next-show-card { background: var(--next-bg); border: 2px solid var(--next-border); border-radius: var(--radius); padding: 24px 28px; }
+  .next-label { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 12px; color: #B8860B; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .next-name { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 24px; color: var(--dark); margin-bottom: 6px; }
+  .next-date { font-size: 14px; color: #92400E; margin-bottom: 6px; line-height: 1.5; }
+  .next-loc { font-size: 14px; color: var(--muted); }
+  .count-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px 28px; box-shadow: var(--shadow); }
+  .count-label { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .count-number { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 48px; color: var(--dark); line-height: 1; margin-bottom: 6px; }
+  .count-sub { font-size: 14px; color: var(--muted); }
+
+  /* SHOWS GRID */
+  .shows-section { max-width: 1120px; margin: 0 auto; padding: 0 32px 64px; }
+  .shows-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .show-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s; }
+  .show-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+  .show-card.tbd { border-style: dashed; border-color: #ccc; background: #FAFAFA; }
+  .show-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .upcoming-badge { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 11px; background: var(--dark); color: #fff; padding: 4px 10px; border-radius: 50px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .show-card.tbd .upcoming-badge { background: #999; }
+  .show-num { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13px; color: var(--muted); }
+  .show-name { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 22px; color: var(--dark); margin-bottom: 16px; line-height: 1.2; }
+  .show-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field-group { display: flex; flex-direction: column; gap: 3px; }
+  .field-label { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .field-value { font-size: 14px; color: var(--dark); font-weight: 500; line-height: 1.4; }
+  .field-value.free { color: #2E7D32; font-weight: 700; }
+  .field-value.unknown { color: var(--muted); font-style: italic; }
+
+  /* ADD CTA */
+  .add-section { max-width: 1120px; margin: 0 auto 64px; padding: 0 32px; }
+  .add-card { background: var(--dark); border-radius: var(--radius); padding: 40px; text-align: center; position: relative; overflow: hidden; }
+  .add-card::before { content: '🎴'; position: absolute; font-size: 120px; opacity: 0.06; top: -20px; left: -20px; }
+  .add-card::after { content: '⚡'; position: absolute; font-size: 120px; opacity: 0.06; bottom: -20px; right: -20px; }
+  .add-title { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 28px; color: #fff; margin-bottom: 10px; }
+  .add-desc { font-size: 15px; color: rgba(255,255,255,0.6); margin-bottom: 24px; }
+  .add-btn { display: inline-block; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 15px; background: var(--yellow); color: var(--dark); padding: 13px 32px; border-radius: 50px; border: none; cursor: pointer; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; letter-spacing: 0.02em; }
+  .add-btn:hover { transform: scale(1.04); box-shadow: 0 6px 20px rgba(255,214,0,0.4); }
+
+  /* FOOTER */
+  footer { border-top: 1px solid var(--border); padding: 24px 32px; text-align: center; font-size: 13px; color: var(--muted); }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; padding: 24px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--card-bg); border-radius: var(--radius); padding: 36px; max-width: 540px; width: 100%; position: relative; max-height: 90vh; overflow-y: auto; }
+  .modal-close { position: absolute; top: 16px; right: 16px; background: var(--border); border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .modal-title { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 24px; margin-bottom: 24px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+  label { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  input, textarea { font-family: 'Inter', sans-serif; font-size: 14px; padding: 10px 14px; border: 2px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--dark); outline: none; transition: border-color 0.2s; }
+  input:focus, textarea:focus { border-color: var(--blue); }
+  textarea { resize: vertical; min-height: 80px; }
+  .submit-btn { width: 100%; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 15px; background: var(--red); color: #fff; padding: 14px; border-radius: 50px; border: none; cursor: pointer; margin-top: 8px; transition: transform 0.2s; }
+  .submit-btn:hover { transform: scale(1.02); }
+
+  /* Leaflet popup customization */
+  .leaflet-popup-content-wrapper { border-radius: 12px !important; font-family: 'Nunito', sans-serif !important; box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important; }
+  .leaflet-popup-content { margin: 12px 16px !important; font-size: 13px; line-height: 1.5; }
+  .popup-name { font-weight: 900; font-size: 14px; color: #1A1A2E; margin-bottom: 4px; }
+  .popup-date { font-weight: 700; color: #E53935; margin-bottom: 2px; }
+  .popup-loc { color: #6B7280; font-size: 12px; }
+
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-map-wrap { height: 240px; }
+    .stat-strip { grid-template-columns: 1fr; }
+    .shows-grid { grid-template-columns: 1fr; }
+    .show-fields { grid-template-columns: 1fr; }
+    .hero-title { font-size: 40px; }
+    .form-row { grid-template-columns: 1fr; }
+    .nav-links .nav-btn:not(.active) { display: none; }
+  }
+
+  .contact-row {
+    display:flex; align-items:center; gap:14px; padding:14px 16px;
+    background:var(--bg); border-radius:12px; border:1px solid var(--border);
+    text-decoration:none; color:var(--dark); transition:transform 0.15s, box-shadow 0.15s;
+  }
+  .contact-row:hover { transform:translateY(-2px); box-shadow:var(--shadow); }
+  .contact-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+  .contact-label { font-family:'Nunito',sans-serif; font-weight:700; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:2px; }
+  .contact-val { font-family:'Nunito',sans-serif; font-weight:800; font-size:15px; color:var(--dark); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="pokeball-icon">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="13" cy="13" r="12" fill="white" stroke="#ccc" stroke-width="1"/>
+        <path d="M1 13 Q1 1 13 1 Q25 1 25 13 Z" fill="#E53935"/>
+        <rect x="1" y="12" width="24" height="2" fill="#1A1A2E"/>
+        <circle cx="13" cy="13" r="4" fill="white" stroke="#1A1A2E" stroke-width="1.5"/>
+        <circle cx="13" cy="13" r="2" fill="#E53935"/>
+      </svg>
+    </div>
+    <span class="nav-title">Pensacola Card Shows</span>
+  </a>
+  <div class="nav-links">
+    <a href="#shows" class="nav-btn active">Upcoming Shows</a>
+    <a href="#" class="nav-btn" onclick="openModal(); return false;">Add Your Show</a>
+    <a href="#" class="nav-btn" onclick="openContact(); return false;">Contact</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div>
+    <p class="hero-eyebrow">Pensacola, Florida &amp; the Gulf Coast</p>
+    <h1 class="hero-title">Upcoming Shows</h1>
+    <p class="hero-desc">Fast, colorful listings for local trading card shows, collector meetups, and vendor tables along the Gulf Coast. Everything sorted so the next event never gets buried.</p>
+    <div class="hero-tags">
+      <span class="hero-tag red">⚡ Built by trainers</span>
+      <span class="hero-tag blue">💙 Collector friendly</span>
+      <span class="hero-tag orange">⚡ Fresh updates</span>
+    </div>
+  </div>
+  <div class="hero-map-wrap">
+    <div id="hero-map"></div>
+    <div class="map-label">📍 11 Shows Along the Gulf Coast</div>
+  </div>
+</section>
+
+<div class="stat-strip">
+  <div class="next-show-card">
+    <p class="next-label">Next show</p>
+    <p class="next-name">The 850 Card Show</p>
+    <p class="next-date">Friday, July 10th &amp; Saturday, July 11th, 2026 · 3:00PM–8:00PM Friday, 9:00AM–3:00PM Saturday</p>
+    <p class="next-loc">North Florida Fairgrounds, 441 Paul Russell Rd, Tallahassee, FL 32301</p>
+  </div>
+  <div class="count-card">
+    <p class="count-label">Live count</p>
+    <p class="count-number">11</p>
+    <p class="count-sub">Upcoming shows ready to browse.</p>
+  </div>
+</div>
+
+<section class="shows-section" id="shows">
+  <div class="shows-grid">
+
+    <div class="show-card">
+      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#01</span></div>
+      <h2 class="show-name">The 850 Card Show</h2>
+      <div class="show-fields">
+        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">The 850 Card Show</span></div>
+        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Friday, July 10th &amp; Saturday, July 11th, 2026</span></div>
+        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">3:00PM–8:00PM Fri · 9:00AM–3:00PM Sat</span></div>
+        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">North Florida Fairgrounds, 441 Paul Russell Rd, Tallahassee, FL 32301</span></div>
+        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
+        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
+      </div>
+    </div>
+
+    <div class="show-card">
+      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#02</span></div>
+      <h2 class="show-name">Anchor Up Card Show</h2>
+      <div class="show-fields">
+        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Anchor Up Card Show</span></div>
+        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, July 11th, 2026</span></div>
+        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:00AM to 3:00PM</span></div>
+        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">VFW Post 706, 5000 Lillian Hwy, Pensacola, FL 32506</span></div>
+        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
+        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value">$50</span></div>
+      </div>
+    </div>
+
+    <div class="show-card">
+      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#03</span></div>
+      <h2 class="show-name">Bay County Card Fest</h2>
+      <div class="show-fields">
+        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Bay County Card Fest</span></div>
+        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, July 18th, 2026</span></div>
+        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">10:00AM to 7:00PM</span></div>
+        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">Central Panhandle Fair, 2230 E 15th St, Panama City, FL 32405</span></div>
+        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
+        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
+      </div>
+    </div>
+
+    <div class="show-card">
+      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#04</span></div>
+      <h2 class="show-name">Coastal Collectors Expo</h2>
+      <div class="show-fields">
+        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Coastal Collectors Expo</span></div>
+        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, July 25th, 2026</span></div>
+        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">10:00AM to 5:00PM</span></div>
+        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">Pensacola Fairgrounds, 6655 Mobile Hwy, Pensacola, FL 32526</span></div>
+        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
+        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value">$100</span></div>
+      </div>
+    </div>
+
+    <div class="show-card">
+      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#05</span></div>
+      <h2 class="show-name">Gulf Breeze Card Clash</h2>
+      <div class="show-fields">
+        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Gulf Breeze Card Clash</span></div>
+        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, August 1st, 2026</span></div>
+        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:00AM to 5:00PM</span></div>
+        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">800 Shoreline Dr, Gulf Breeze, FL 32561</span></div>
+        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
+        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
+      </div>
+    </div>
+
+    <div class="show-card">
+      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#06</span></div>
+      <h2 class="show-name">TheC2Show</h2>
+      <div class="show-fields">
+        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">TheC2Show</span></div>
+        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, August 15th, 2026</span></div>
+        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:00AM to 5:00PM</span></div>
+        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">D'Iberville High School Gym, 15625 Lamey Bridge Rd, Biloxi, MS 39532</span></div>
+        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
+        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
+      </div>
+    </div>
+
+    <div class="show-card">
+      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#07</span></div>
+      <h2 class="show-name">Anchor Up Spectacular</h2>
+      <div class="show-fields">
+        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Anchor Up Spectacular</span></div>
+        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, August 22nd, 2026</span></div>
+        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">8:00AM to 4:00PM</span></div>
+        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">Hilton Garden Inn, 1144 Airport Blvd, Pensacola, FL 32504</span></div>
+        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
+        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
+      </div>
+    </div>
+
+    <div class="show-card tbd">
+      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#08</span></div>
+      <h2 class="show-name">Details Coming Soon</h2>
+      <div class="show-fields">
+        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value unknown">TBD</span></div>
+        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, August 22nd, 2026</span></div>
+        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value unknown">Unknown</span></div>
+        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">Pensacola Fairgrounds, 6655 Mobile Hwy, Pensacola, FL 32526</span></div>
+        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
+        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
+      </div>
+    </div>
+
+    <div class="show-card">
+      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#09</span></div>
+      <h2 class="show-name">Anchor Up Card Show</h2>
+      <div class="show-fields">
+        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Anchor Up Card Show</span></div>
+        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, October 10th, 2026</span></div>
+        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:00AM to 3:00PM</span></div>
+        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">VFW Post 706, 5000 Lillian Hwy, Pensacola, FL 32506</span></div>
+        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
+        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value">$50</span></div>
+      </div>
+    </div>
+
+    <div class="show-card">
+      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#10</span></div>
+      <h2 class="show-name">DJ's Trade Show</h2>
+      <div class="show-fields">
+        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">DJ's Trade Show</span></div>
+        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, October 3rd, 2026</span></div>
+        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:00AM to 5:00PM</span></div>
+        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">ABBA Shrine, 7701 Hitt Road, Mobile, AL 36695</span></div>
+        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
+        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
+      </div>
+    </div>
+
+    <div class="show-card">
+      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#11</span></div>
+      <h2 class="show-name">Anchor Up Card Show</h2>
+      <div class="show-fields">
+        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Anchor Up Card Show</span></div>
+        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, November 14th, 2026</span></div>
+        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:00AM to 3:00PM</span></div>
+        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">VFW Post 706, 5000 Lillian Hwy, Pensacola, FL 32506</span></div>
+        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
+        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value">$50</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="add-section">
+  <div class="add-card">
+    <h2 class="add-title">Running a show? Get listed. 🎴</h2>
+    <p class="add-desc">Submit your event details and we'll get it posted for the whole Gulf Coast community to see.</p>
+    <button class="add-btn" onclick="openModal()">+ Add Your Show</button>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 Pensacola Card Shows · Gulf Coast Trading Card Community · Made with ⚡ for trainers &amp; collectors · <a href="#" onclick="openContact(); return false;" style="color:inherit;">Contact Zac</a></p>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 class="modal-title">Add Your Show 🎴</h2>
+    <form id="show-form" action="https://formspree.io/f/xzdlvozp" method="POST" onsubmit="handleSubmit(event)">
+    <div class="form-row">
+      <div class="form-group"><label>Event Name *</label><input type="text" name="event_name" placeholder="e.g. Gulf Coast Card Swap" required></div>
+      <div class="form-group"><label>Organizer / Contact</label><input type="text" name="organizer" placeholder="Your name or org"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Event Date *</label><input type="date" name="event_date" required></div>
+      <div class="form-group"><label>End Date (if multi-day)</label><input type="date" name="event_end_date"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Start Time *</label><input type="time" name="start_time" required></div>
+      <div class="form-group"><label>End Time *</label><input type="time" name="end_time" required></div>
+    </div>
+    <div class="form-group"><label>Event Location / Venue *</label><input type="text" name="location" placeholder="Venue name, full address, city, state, ZIP" required></div>
+    <div class="form-row">
+      <div class="form-group"><label>Entry Fee</label><input type="text" name="entry_fee" placeholder="$0 or $5, etc."></div>
+      <div class="form-group"><label>Vendor Table Fee</label><input type="text" name="vendor_fee" placeholder="$50, etc."></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Tables Available</label><input type="number" name="tables_available" placeholder="e.g. 40"></div>
+      <div class="form-group"><label>Card Types Featured</label><input type="text" name="card_types" placeholder="Pokémon, MTG, Sports…"></div>
+    </div>
+    <div class="form-group"><label>Website or Social Link</label><input type="url" name="website" placeholder="https://..."></div>
+    <div class="form-group"><label>Additional Notes</label><textarea name="notes" placeholder="Parking, special guests, raffles, etc."></textarea></div>
+    <div class="form-group"><label>Your Email *</label><input type="email" name="_replyto" placeholder="so we can follow up with you" required></div>
+    <input type="hidden" name="_subject" value="New Card Show Submission — Pensacola Card Shows">
+    <button class="submit-btn" type="submit">Submit Show for Review ⚡</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // --- MAP ---
+  const shows = [
+    { name: "The 850 Card Show", date: "July 10–11, 2026", loc: "North Florida Fairgrounds, Tallahassee, FL", lat: 30.4041, lng: -84.2800 },
+    { name: "Anchor Up Card Show", date: "July 11, 2026", loc: "VFW Post 706, Pensacola, FL", lat: 30.4267, lng: -87.2859 },
+    { name: "Bay County Card Fest", date: "July 18, 2026", loc: "Central Panhandle Fair, Panama City, FL", lat: 30.1744, lng: -85.6341 },
+    { name: "Coastal Collectors Expo", date: "July 25, 2026", loc: "Pensacola Fairgrounds, Pensacola, FL", lat: 30.4734, lng: -87.3109 },
+    { name: "Gulf Breeze Card Clash", date: "August 1, 2026", loc: "800 Shoreline Dr, Gulf Breeze, FL", lat: 30.3547, lng: -87.1787 },
+    { name: "TheC2Show", date: "August 15, 2026", loc: "D'Iberville High School Gym, Biloxi, MS", lat: 30.5117, lng: -88.9328 },
+    { name: "Anchor Up Spectacular", date: "August 22, 2026", loc: "Hilton Garden Inn, Pensacola, FL", lat: 30.4797, lng: -87.2157 },
+    { name: "TBD Show", date: "August 22, 2026", loc: "Pensacola Fairgrounds, Pensacola, FL", lat: 30.4720, lng: -87.3090 },
+    { name: "Anchor Up Card Show", date: "October 10, 2026", loc: "VFW Post 706, Pensacola, FL", lat: 30.4280, lng: -87.2840 },
+    { name: "DJ's Trade Show", date: "October 3, 2026", loc: "ABBA Shrine, Mobile, AL", lat: 30.6671, lng: -88.2234 },
+    { name: "Anchor Up Card Show", date: "November 14, 2026", loc: "VFW Post 706, Pensacola, FL", lat: 30.4255, lng: -87.2870 },
+  ];
+
+  const map = L.map('hero-map', { zoomControl: true, scrollWheelZoom: false, attributionControl: false })
+    .setView([30.42, -87.2], 6);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap &copy; CartoDB',
+    maxZoom: 19
+  }).addTo(map);
+
+  // Custom red pokeball-style marker
+  const markerIcon = L.divIcon({
+    html: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.35))">
+      <circle cx="14" cy="14" r="13" fill="white" stroke="#ccc" stroke-width="1"/>
+      <path d="M1 14 Q1 1 14 1 Q27 1 27 14 Z" fill="#E53935"/>
+      <rect x="1" y="13" width="26" height="2.5" fill="#1A1A2E"/>
+      <circle cx="14" cy="14" r="5" fill="white" stroke="#1A1A2E" stroke-width="1.5"/>
+      <circle cx="14" cy="14" r="2.5" fill="#E53935"/>
+    </svg>`,
+    className: '',
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
+    popupAnchor: [0, -16]
+  });
+
+  shows.forEach(s => {
+    L.marker([s.lat, s.lng], { icon: markerIcon })
+      .addTo(map)
+      .bindPopup(`
+        <div class="popup-name">${s.name}</div>
+        <div class="popup-date">📅 ${s.date}</div>
+        <div class="popup-loc">📍 ${s.loc}</div>
+      `);
+  });
+
+  // --- MODAL ---
+  function openModal() { document.getElementById('modal').classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeModal() { document.getElementById('modal').classList.remove('open'); document.body.style.overflow = ''; }
+  function closeModalOutside(e) { if (e.target === document.getElementById('modal')) closeModal(); }
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const form = document.getElementById('show-form');
+    const btn = form.querySelector('.submit-btn');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        btn.textContent = '✅ Submitted!';
+        setTimeout(() => { closeModal(); form.reset(); btn.textContent = 'Submit Show for Review ⚡'; btn.disabled = false; }, 1800);
+      } else {
+        btn.textContent = '❌ Error — try again';
+        btn.disabled = false;
+      }
+    } catch {
+      btn.textContent = '❌ Network error';
+      btn.disabled = false;
+    }
+  }
+
+  function openContact() { document.getElementById('contact-modal').classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeContact() { document.getElementById('contact-modal').classList.remove('open'); document.body.style.overflow = ''; }
+  function closeContactOutside(e) { if (e.target === document.getElementById('contact-modal')) closeContact(); }
+
+  document.querySelector('a[href="#shows"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.getElementById('shows').scrollIntoView({ behavior: 'smooth' });
+  });
+</script>
+
+<!-- CONTACT MODAL -->
+<div class="modal-overlay" id="contact-modal" onclick="closeContactOutside(event)">
+  <div class="modal" style="max-width:420px;">
+    <button class="modal-close" onclick="closeContact()">✕</button>
+    <div style="text-align:center; margin-bottom:24px;">
+      <div style="font-size:52px; margin-bottom:8px;">🎴</div>
+      <h2 class="modal-title" style="margin-bottom:4px;">Get in Touch</h2>
+      <p style="font-size:14px; color:var(--muted);">Questions, submissions, or just want to talk cards?</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <a href="mailto:zacbrannen@gmail.com" class="contact-row">
+        <div class="contact-icon" style="background:#FFF0F0;">📧</div>
+        <div>
+          <div class="contact-label">Email</div>
+          <div class="contact-val">zacbrannen@gmail.com</div>
+        </div>
+      </a>
+      <div class="contact-row" style="cursor:default;">
+        <div class="contact-icon" style="background:#EDE7F6;">🎮</div>
+        <div>
+          <div class="contact-label">Discord</div>
+          <div class="contact-val">@ZBFlips</div>
+        </div>
+      </div>
+      <div class="contact-row" style="cursor:default;">
+        <div class="contact-icon" style="background:#E8F5E9;">👤</div>
+        <div>
+          <div class="contact-label">Organizer</div>
+          <div class="contact-val">Zac Brannen</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:24px; padding:16px; background:var(--next-bg); border-radius:12px; border:2px solid var(--next-border); text-align:center;">
+      <p style="font-size:13px; color:#92400E; font-weight:600;">Want to list your show?</p>
+      <p style="font-size:13px; color:var(--muted); margin-top:4px;">Use the <strong>Add Your Show</strong> button on the main page — or email Zac directly!</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>
