@@ -227,7 +227,7 @@
   .state-badge {
     font-family:'Nunito',sans-serif; font-weight:800; font-size:11px;
     padding:4px 10px; border-radius:50px; letter-spacing:0.06em;
-    text-transform:uppercase; color:#fff; margin-left:6px;
+    text-transform:uppercase; color:#fff; margin-left:2px;
     display:inline-flex; align-items:center; gap:4px;
   }
   .state-FL { background:#2E7D32; }              /* Florida — green */
@@ -286,7 +286,7 @@
     transition:all 0.15s; display:inline-flex; align-items:center; gap:6px;
   }
   .card-action-btn:hover { transform:translateY(-1px); box-shadow:var(--shadow); }
-  .card-action-btn.calendar { border-color:#1565C0; color:#1565C0; }
+  .card-action-btn.calendar { border-color:#2E7D32; color:#2E7D32; }
   .card-action-btn.report { border-color:var(--red); color:var(--red); margin-left:auto; }
 
   .last-updated {
@@ -1154,13 +1154,6 @@
           actions.appendChild(a);
         }
 
-        const reportBtn = document.createElement('a');
-        reportBtn.className = 'card-action-btn report';
-        reportBtn.href = '#';
-        reportBtn.innerHTML = '🚩 Report error';
-        const label = `${show.name} (#${String(idx+1).padStart(2,'0')})`;
-        reportBtn.addEventListener('click', (e) => { e.preventDefault(); openReport(label); });
-        actions.appendChild(reportBtn);
 
         card.appendChild(actions);
       }
