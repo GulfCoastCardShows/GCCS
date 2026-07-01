@@ -180,6 +180,27 @@
   .modal { background: var(--card-bg); border-radius: var(--radius); padding: 36px; max-width: 540px; width: 100%; position: relative; max-height: 90vh; overflow-y: auto; }
   .modal-close { position: absolute; top: 16px; right: 16px; background: var(--border); border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
   .modal-title { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 24px; margin-bottom: 24px; }
+  /* Featured event detail modal — blurs the background */
+  .modal-overlay.blur-bg { background: rgba(10, 15, 30, 0.55); backdrop-filter: blur(10px) saturate(120%); }
+  .show-card.clickable { cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; position: relative; }
+  .show-card.clickable:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.18); }
+  .show-card.clickable:focus-visible { outline: 3px solid var(--red); outline-offset: 3px; }
+  .show-card.clickable .card-action-btn { position: relative; z-index: 2; }
+  .details-badge { margin-left: auto; background: #1565C0; color:#fff; font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 999px; letter-spacing: .3px; text-transform: uppercase; }
+  .detail-modal { max-width: 720px; }
+  .detail-hero { background: linear-gradient(135deg, #E53935 0%, #1A1A2E 100%); color: #fff; margin: -36px -36px 24px; padding: 32px 36px; border-radius: var(--radius) var(--radius) 0 0; }
+  .detail-hero h2 { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 30px; margin: 0 0 6px; line-height: 1.15; }
+  .detail-hero .detail-sub { font-size: 15px; opacity: .92; }
+  .detail-section { margin-bottom: 22px; }
+  .detail-section h3 { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 15px; text-transform: uppercase; letter-spacing: .6px; color: var(--red); margin: 0 0 8px; }
+  .detail-section p, .detail-section li { font-size: 15px; line-height: 1.6; color: var(--text); margin: 0 0 6px; }
+  .detail-section ul { padding-left: 20px; margin: 0; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
+  .detail-grid .detail-cell { background: #f7f5ef; padding: 12px 14px; border-radius: 10px; }
+  .detail-grid .detail-cell .k { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); font-weight: 700; }
+  .detail-grid .detail-cell .v { font-size: 15px; font-weight: 600; color: var(--text); margin-top: 2px; }
+  .detail-cta { display: inline-block; background: var(--red); color:#fff; padding: 12px 20px; border-radius: 10px; font-weight: 800; text-decoration: none; margin-right: 8px; }
+  .detail-cta.secondary { background: #1A1A2E; }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
   .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
   label { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
@@ -345,6 +366,7 @@
     <p class="count-label">Live count</p>
     <p class="count-number" id="count-number">–</p>
     <p class="count-sub">Upcoming shows ready to browse.</p>
+    <p class="count-verified" id="count-verified" style="font-size:12px;color:var(--muted);margin-top:8px;font-family:'Nunito',sans-serif;font-weight:700;letter-spacing:.02em;">Last verified: —</p>
   </div>
 </div>
 
@@ -367,6 +389,18 @@
     <div class="ctrl-group" style="flex:0 0 auto;">
       <label class="ctrl-label">&nbsp;</label>
       <button class="ctrl-btn secondary" type="button" onclick="clearHomeBase()">Clear</button>
+    </div>
+    <div class="ctrl-group" style="flex:1 1 260px;">
+      <label class="ctrl-label" for="search-input">Search Shows</label>
+      <input id="search-input" class="ctrl-input" type="search"
+             placeholder="Title, city, or venue…" oninput="applyFilters()" autocomplete="off">
+    </div>
+    <div class="ctrl-group" style="flex:0 0 auto;">
+      <label class="ctrl-label">&nbsp;</label>
+      <label style="display:inline-flex;align-items:center;gap:8px;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;color:var(--dark);cursor:pointer;height:44px;">
+        <input id="show-past-toggle" type="checkbox" onchange="applyFilters()" style="width:18px;height:18px;cursor:pointer;">
+        Show past events
+      </label>
     </div>
     <div class="ctrl-group">
       <label class="ctrl-label" for="sort-select">Sort Shows By</label>
@@ -554,6 +588,46 @@
   </div>
 </div>
 
+<!-- EVENT DETAIL MODAL (populated dynamically from EVENTS data) -->
+<div class="modal-overlay blur-bg" id="event-detail-modal" onclick="closeEventDetailOutside(event)">
+  <div class="modal detail-modal">
+    <button class="modal-close" onclick="closeEventDetail()" aria-label="Close">✕</button>
+    <div class="detail-hero">
+      <div id="detail-eyebrow" style="font-size:12px; text-transform:uppercase; letter-spacing:1px; opacity:.9; font-weight:800;">Show Details</div>
+      <h2 id="detail-name"></h2>
+      <div class="detail-sub" id="detail-sub"></div>
+    </div>
+
+    <div class="detail-section" id="detail-about-sec" hidden>
+      <h3>About This Show</h3>
+      <p id="detail-about"></p>
+    </div>
+
+    <div class="detail-section" id="detail-glance-sec" hidden>
+      <h3>At a Glance</h3>
+      <div class="detail-grid" id="detail-glance"></div>
+    </div>
+
+    <div class="detail-section" id="detail-expect-sec" hidden>
+      <h3>What to Expect</h3>
+      <ul id="detail-expect"></ul>
+    </div>
+
+    <div class="detail-section" id="detail-loc-sec" hidden>
+      <h3>Location</h3>
+      <p id="detail-loc"></p>
+      <p id="detail-loc-notes" style="color:var(--muted); font-size:14px;" hidden></p>
+    </div>
+
+    <div class="detail-section" style="margin-bottom:0;" id="detail-cta-sec">
+      <a class="detail-cta" id="detail-cta-primary" target="_blank" rel="noopener" hidden></a>
+      <a class="detail-cta secondary" id="detail-cta-directions" target="_blank" rel="noopener">🗺️ Get Directions</a>
+    </div>
+  </div>
+</div>
+
+
+
 <script>
   /* =====================================================================
      EVENTS DATA
@@ -581,13 +655,6 @@
       websiteUrl: "https://www.instagram.com/the850cardshow/?hl=en", websiteLabel: "📸 Instagram",
       organizer: "The 850 Card Show",
       tbd: false,
-      authServices: { present: false, company: "" },
-      details: {
-        about: "Brought to you by The 850 Card Show and Tallahassee Ford, this is the Tallahassee 850 Card Show! Your one-stop-shop for Pokemon, Sports Cards, One Piece, and Disney cards and other collectibles. To all kids that show up right as they open the doors at 3:00PM, they will have free packs while supplies last!",
-        atAGlance: [{label:"Friday Hours",value:"3:00PM–8:00PM"}, {label:"Saturday Hours",value:"9:00AM–3:00PM"}, {label:"Parking",value:"Free"}, {label:"Vendor Tables",value:"Unknown"}],
-        whatToExpect: ["Pokemon", "Sports Cards", "One Piece", "Disney", "& More!"],
-        locationNotes: "",
-      },
     },
     {
       id: "evt-002",
@@ -603,13 +670,6 @@
       websiteUrl: "https://anchorupcardshows.com/", websiteLabel: "🌐 anchorupcardshows.com",
       organizer: "Anchor Up Card Shows",
       tbd: false,
-      authServices: { present: false, company: "" },
-      details: {
-        about: "ANCHOR UP SPORTS CARD SHOW — JULY 11TH! ⚓\nPensacola… what a ride it’s been.\nMonth after month, this community continues to show up in a BIG way. From packed tables and incredible deals to new friendships and unforgettable pulls, every show reminds us why we do this. ❤️\n🔥 WE’RE BACK — SATURDAY, JULY 11TH 🔥\nWhether you’re a seasoned collector, a weekend ripper, a sports card fanatic, or just looking for a fun family outing, this is the place to be.\n💥 MARK YOUR CALENDARS:\n📅 Saturday, July 11th, 2026\n⏰ 9:00 AM – 3:00 PM\n📍 VFW Post 706\n5000 W. Lillian Hwy, Pensacola, FL\nThis isn’t just a card show anymore—it’s a community. A place where collectors, families, military members, and hobbyists can come together and enjoy something positive.\nThank you all for the continued support. Every share, every table, every attendee helps us grow this amazing hobby and community.\n⚓ Anchor Up Sports\n⚓ Buy. Sell. Trade.\n⚓ We’ll see you July 11th!",
-        atAGlance: [{label:"Friday Hours",value:"9:00AM to 3:00PM"}, {label:"Parking",value:"Free"}, {label:"Vendor Tables",value:"30+"}],
-        whatToExpect: ["💰 FREE ADMISSION", "💎 Top-tier vendors from across the Gulf Coast", "📦 Pokémon, One Piece, Sports Cards, TCGs & Sealed Product", "🎯 Slabs, singles, vintage, modern & everything in between", "🎟️ FREE giveaways throughout the day", "👨‍👩‍👧‍👦 Family-friendly atmosphere", "🤝 Buy • Sell • Trade"],
-        locationNotes: "",
-      },
     },
     {
       id: "evt-003",
@@ -625,15 +685,13 @@
       websiteUrl: "https://www.instagram.com/baycountycardfest/", websiteLabel: "📸 Instagram",
       organizer: "Bay County Card Fest",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     },
     {
       id: "evt-004",
       name: "Iconic Sports Cards & Collectibles Show",
-      startDate: "2026-07-24", endDate: "2026-07-25",
-      dateDisplay: "Friday, July 24th & Saturday, July 25th, 2026",
-      time: "11:00AM to 8:00PM Friday, 10:00AM to 6:00PM Saturday",
+      startDate: "2026-07-24", endDate: "2026-07-24",
+      dateDisplay: "Friday, July 24th, 2026",
+      time: "10:00AM to 8:00PM",
       timeUnknown: false,
       location: "Rest & Relax Inn, 7200 Plantation Rd, Pensacola, FL 32504",
       lat: 30.4734, lng: -87.3109,
@@ -642,13 +700,36 @@
       websiteUrl: "https://www.facebook.com/events/786240757812864/", websiteLabel: "📅 Facebook Event",
       organizer: "Iconic Sports Cards & Collectibles",
       tbd: false,
-      authServices: { present: true, company: "CGC & JSA" },
-      details: {
-        about: "Come out and browse iconic sports cards and collectibles from vendors across the gulf coast.\nBring the whole family there is something for everyone!\nFrom Professionally Graded Sports Cards & Pokémon cards, Vintage and Newly Released Packs, boxes and factory sets, down to heavy discounted $1 items! There is something for every budget!\nBeen looking for that special baseball card, comic book, action figure, video game, beanie baby or toy that \"mom threw out?\" There is a good chance you may find it here!\nStop by and have a look. Admission is $2 each paid admission grants you a choice from one item from our gift table! (come early to get one of our premier gifts). Plus an entry with a chance to win our next door prize drawing. Drawings will be held on even hours.\nInterested in becoming a vendor or would like more information, please FB message us or call (850) 686-2690",
-        atAGlance: [{label:"Friday Hours",value:"11:00AM to 8:00PM"}, {label:"Saturday Hours",value:"10:00AM to 6:00PM"}, {label:"Parking",value:"Free"}, {label:"Vendor Tables",value:"Unknown"}],
-        whatToExpect: ["Pokemon", "Sports Cards", "One Piece TCG", "Disney Lorcana"],
-        locationNotes: "",
-      },
+    },
+    {
+      id: "evt-005",
+      name: "Cards on the Coast",
+      startDate: "2026-07-24", endDate: "2026-07-24",
+      dateDisplay: "Friday, July 24th, 2026",
+      time: "3:00PM to 8:00PM",
+      timeUnknown: false,
+      location: "Bay County Fairgrounds, 2230 E 15th St, Panama City, FL 32405",
+      lat: 30.3547, lng: -87.1787,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "",
+      websiteUrl: "https://www.facebook.com/profile.php?id=100095608624898", websiteLabel: "📘 Facebook",
+      organizer: "Cards on the Coast",
+      tbd: false,
+    },
+    {
+      id: "evt-006",
+      name: "Cards on the Coast",
+      startDate: "2026-07-25", endDate: "2026-07-25",
+      dateDisplay: "Saturday, July 25th, 2026",
+      time: "9:00AM to 4:00PM",
+      timeUnknown: false,
+      location: "University of West Florida HLS, 11000 University Pkwy, Pensacola, FL 32514",
+      lat: 30.5117, lng: -88.9328,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "",
+      websiteUrl: "https://www.facebook.com/events/university-of-west-florida/cards-on-the-coast-2026/4052800554850499/", websiteLabel: "📅 Facebook Event",
+      organizer: "Cards on the Coast",
+      tbd: false,
     },
     {
       id: "evt-007",
@@ -664,8 +745,6 @@
       websiteUrl: "https://flcoastalcollectors.com/#about", websiteLabel: "🌐 flcoastalcollectors.com",
       organizer: "Coastal Collectors Expo",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     },
     {
       id: "evt-008",
@@ -681,25 +760,6 @@
       websiteUrl: "https://www.facebook.com/events/959065157082890/", websiteLabel: "📅 Facebook Event",
       organizer: "Gulf Breeze Card Clash",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
-    },
-    {
-      id: "evt-006",
-      name: "Cards on the Coast",
-      startDate: "2026-08-08", endDate: "2026-08-08",
-      dateDisplay: "Saturday, August 8th, 2026",
-      time: "9:00AM to 4:00PM",
-      timeUnknown: false,
-      location: "University of West Florida HLS, 11000 University Pkwy, Pensacola, FL 32514",
-      lat: 30.5117, lng: -88.9328,
-      entryFee: "$5 - FREE for 15 and under!", entryFree: false,
-      vendorFee: "",
-      websiteUrl: "https://www.facebook.com/events/university-of-west-florida/cards-on-the-coast-2026/4052800554850499/", websiteLabel: "📅 Facebook Event",
-      organizer: "Cards on the Coast",
-      tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     },
     {
       id: "evt-009",
@@ -715,8 +775,6 @@
       websiteUrl: "https://www.facebook.com/p/The-Mid-South-Collectible-Toy-Show-61584028915878/", websiteLabel: "📘 Facebook",
       organizer: "Mid-South Collectible Toy Show",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     },
     {
       id: "evt-010",
@@ -732,8 +790,6 @@
       websiteUrl: "https://www.facebook.com/profile.php?id=61578258239106", websiteLabel: "📘 Facebook",
       organizer: "TheC2Show",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     },
     {
       id: "evt-011",
@@ -749,13 +805,6 @@
       websiteUrl: "https://anchorupcardshows.com/", websiteLabel: "🌐 anchorupcardshows.com",
       organizer: "Anchor Up Card Shows",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: {
-        about: "What started as a local card show has grown into something much bigger—a community built around the hobby we all love.\nEvery show brings together collectors, families, military members, vendors, and enthusiasts from across the region. The energy has been incredible, and August 22nd will be no different.\nWe’re not just hosting events.\n⚓ We’re building a community.\n⚓ We’re growing the hobby.\n⚓ We’re creating experiences people remember.\n📅 August 22nd, 2026\n📍 Hilton Garden Inn – Pensacola, FL\nMark your calendars.\nTell your friends.\nBring the family.\nLet’s make this the biggest Spectacular yet! 💪🏽🔥⚓",
-        atAGlance: [{label:"Saturday Hours",value:"8:00AM to 4:00PM"}, {label:"Parking",value:"Free"}, {label:"Vendor Tables",value:"70+"}],
-        whatToExpect: ["💥 WHAT TO EXPECT:", "🎟️ FREE Raffles Throughout the Day", "🤝 Buy • Sell • Trade", "💎 Sports Cards, Pokémon, One Piece, TCGs & More", "🔥 Vendors from Across the Southeast", "🍔 Food & Drinks On-Site", "👨‍👩‍👧‍👦 Family-Friendly Environment", "🎯 Deals, Collections, Slabs, Singles & Sealed Product"],
-        locationNotes: "",
-      },
     },
     {
       id: "evt-012",
@@ -770,9 +819,7 @@
       vendorFee: "",
       websiteUrl: "https://thefliptradeshow.com/pages/events-coming-up", websiteLabel: "🌐 thefliptradeshow.com",
       organizer: "The Flip Trade Show",
-      tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
+      tbd: true,
     },
     {
       id: "evt-013",
@@ -788,8 +835,6 @@
       websiteUrl: "https://www.facebook.com/GulfCoastCardShow/photos/-big-news-the-gulf-coast-card-show-is-coming-to-saraland-calling-all-collectors-/1275820454712364/", websiteLabel: "📘 Facebook",
       organizer: "Gulf Coast Card Show",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     },
     {
       id: "evt-014",
@@ -805,30 +850,21 @@
       websiteUrl: "https://www.facebook.com/events/786240757812864/", websiteLabel: "📅 Facebook Event",
       organizer: "Iconic Sports Cards & Collectibles",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     },
     {
       id: "evt-015",
       name: "Card Town Pensacola Labor Day Showcase",
       startDate: "2026-09-07", endDate: "2026-09-07",
       dateDisplay: "Monday, September 7th, 2026",
-      time: "10:00AM to 3:00PM (9:00AM VIP Entry)",
+      time: "10:00AM to 3:00PM",
       timeUnknown: false,
       location: "Pensacola Fairgrounds, 6655 Mobile Hwy, Pensacola, FL 32526",
       lat: 30.1744, lng: -85.6341,
       entryFee: "$5", entryFree: false,
       vendorFee: "$60",
-      websiteUrl: "https://www.ontreasure.com/events/card-town-pensacola-labor-day-spectacular--09072026?fbclid=IwY2xjawSyOTlleHRuA2FlbQIxMQBicmlkETFjSHFWV1dXZzdSWHRRNkkzc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHoDvtilx4cm6BLUIsbori3OqVOJ4ADRGgesZTasQuJcI1witSdWc3P0Im3dR_aem_kMxpN8fm3dnEpKWuDkhWyA", websiteLabel: "📅 Facebook Event",
+      websiteUrl: "https://www.facebook.com/events/1872661796742511", websiteLabel: "📅 Facebook Event",
       organizer: "Card Town Pensacola",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: {
-        about: "Pensacola's newest trading card show IS BACK FOR ROUND TWO!! Sport Cards, Pokemon, TCG, One Piece, Sports Memorabilia & More!",
-        atAGlance: [{label:"10",value:"00AM to 3:00PM"}, {label:"9",value:"00AM Early VIP Entry"}],
-        whatToExpect: ["Pokemon", "Sports Cards", "One Piece TCG", "Disney Lorcana TCG"],
-        locationNotes: "",
-      },
     },
     {
       id: "evt-016",
@@ -844,8 +880,6 @@
       websiteUrl: "https://850sportscards.net", websiteLabel: "🌐 850sportscards.net",
       organizer: "850 Sports Cards",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     },
     {
       id: "evt-017",
@@ -861,8 +895,6 @@
       websiteUrl: "https://www.facebook.com/events/the-grand-hall/mobtown-card-show-sep-26th-2026/1000135239066403/", websiteLabel: "📅 Facebook Event",
       organizer: "MobTown Cards & Collectibles",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     },
     {
       id: "evt-018",
@@ -878,13 +910,6 @@
       websiteUrl: "https://anchorupcardshows.com", websiteLabel: "🌐 anchorupcardshows.com",
       organizer: "Anchor Up Card Shows",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: {
-        about: "",
-        atAGlance: [],
-        whatToExpect: ["💰 FREE ADMISSION", "💎 Top-tier vendors from across the Gulf Coast", "📦 Pokémon, One Piece, Sports Cards, TCGs & Sealed Product", "🎯 Slabs, singles, vintage, modern & everything in between", "🎟️ FREE giveaways throughout the day", "👨‍👩‍👧‍👦 Family-friendly atmosphere", "🤝 Buy • Sell • Trade"],
-        locationNotes: "",
-      },
     },
     {
       id: "evt-019",
@@ -900,8 +925,6 @@
       websiteUrl: "https://www.facebook.com/events/4253146798278339", websiteLabel: "📅 Facebook Event",
       organizer: "DJ's Trade Show",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     },
     {
       id: "evt-020",
@@ -917,25 +940,6 @@
       websiteUrl: "https://anchorupcardshows.com/", websiteLabel: "🌐 anchorupcardshows.com",
       organizer: "Anchor Up Card Shows",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
-    },
-    {
-      id: "evt-1782914151133",
-      name: "Riptide CardCon",
-      startDate: "2026-10-18", endDate: "2026-10-18",
-      dateDisplay: "Sunday, October 18th, 2026",
-      time: "9:00AM to 6:00PM",
-      timeUnknown: false,
-      location: "FWB Fairgrounds, 1958 Lewis Turner Blvd, Fort Walton Beach, FL 32547",
-      lat: 30.4669921, lng: -86.6196216,
-      entryFee: "$0", entryFree: true,
-      vendorFee: "",
-      websiteUrl: "", websiteLabel: "",
-      organizer: "Riptide CardCon",
-      tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     },
     {
       id: "evt-021",
@@ -951,8 +955,6 @@
       websiteUrl: "https://www.facebook.com/p/The-Mid-South-Collectible-Toy-Show-61584028915878/", websiteLabel: "📘 Facebook",
       organizer: "Mid-South Collectible Toy Show",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     },
     {
       id: "evt-022",
@@ -968,8 +970,6 @@
       websiteUrl: "https://www.instagram.com/nashcardshow/", websiteLabel: "📸 Instagram",
       organizer: "Nashville Card Show",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     },
     {
       id: "evt-023",
@@ -985,8 +985,6 @@
       websiteUrl: "https://midsouthcardcon.com", websiteLabel: "🌐 midsouthcardcon.com",
       organizer: "Mid-South Card Con",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     },
     {
       id: "evt-024",
@@ -1002,8 +1000,6 @@
       websiteUrl: "https://anchorupcardshows.com/", websiteLabel: "🌐 anchorupcardshows.com",
       organizer: "Anchor Up Card Shows",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     },
     {
       id: "evt-025",
@@ -1012,15 +1008,13 @@
       dateDisplay: "Saturday, November 28th, 2026",
       time: "9:30AM to 4:30PM",
       timeUnknown: false,
-      location: "Hadji Shrine Temple: 800 W 9 Mile Rd Pensacola, FL 32534",
+      location: "VFW Post 706, 5000 Lillian Hwy, Pensacola, FL 32506",
       lat: 30.6177, lng: -88.1789,
       entryFee: "$0", entryFree: true,
       vendorFee: "",
       websiteUrl: "https://www.facebook.com/photo/?fbid=36162817626665257&set=a.183116718395470", websiteLabel: "📅 Facebook",
       organizer: "Emerald Coast Collectors Showcase",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     },
     {
       id: "evt-026",
@@ -1036,8 +1030,6 @@
       websiteUrl: "https://850sportscards.net/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQPOTM2NjE5NzQzMzkyNDU5AAGndMvEYRgV2KOU9n15UXLJeNfx_UlkfRzeq3emRCdD0H303c0-W5KtMlEIBgk_aem_WLkN6f9w0KA3SRIt25QAqg", websiteLabel: "📘 Facebook",
       organizer: "850 Sports Cards",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     },
     {
       id: "evt-027",
@@ -1053,8 +1045,6 @@
       websiteUrl: "https://www.facebook.com/p/The-Mid-South-Collectible-Toy-Show-61584028915878/", websiteLabel: "📘 Facebook",
       organizer: "Mid-South Collectible Toy Show",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     }
   ];
   /* ==EVENTS-DATA-END== */
@@ -1144,6 +1134,22 @@
     }
     fields += fieldGroup('Organizer', escapeHtml(ev.organizer || 'Unknown'), 'organizer', true);
 
+    // Authentication services (grading/authentication on-site)
+    let authText, authCls = '';
+    if (ev.authServices && ev.authServices.present) {
+      const co = (ev.authServices.company || '').trim();
+      authText = co ? `Yes — ${escapeHtml(co)}` : 'Yes';
+      authCls = 'free';
+    } else if (ev.authServices && ev.authServices.present === false) {
+      authText = 'No';
+    } else {
+      authText = 'Unknown';
+      authCls = 'unknown';
+    }
+    fields += fieldGroup('Authentication Services', authText, authCls);
+
+    // Per-card "Last Verified" removed — single timestamp is shown under Live count instead.
+
     const calUrl = googleCalUrl(ev);
     let actions = '<div class="card-actions">';
     if (calUrl) actions += `<a class="card-action-btn calendar" href="${calUrl}" target="_blank" rel="noopener">📅 Add to Calendar</a>`;
@@ -1152,11 +1158,27 @@
 
     const sortTs = (eventStartDate(ev) || new Date(0)).getTime();
 
-    return `<div class="show-card${ev.tbd ? ' tbd' : ''}" data-lat="${ev.lat}" data-lng="${ev.lng}" data-default-order="${idx}" data-sort-date="${sortTs}">
+    const endTs = (eventEndDate(ev) || eventStartDate(ev) || new Date(0)).getTime();
+    const searchBlob = [ev.name, ev.location, ev.organizer, ev.dateDisplay]
+      .filter(Boolean).join(' ').toLowerCase();
+    const hasDetails = !!(
+      (ev.details && (
+        (ev.details.about && ev.details.about.trim()) ||
+        (Array.isArray(ev.details.atAGlance) && ev.details.atAGlance.length) ||
+        (Array.isArray(ev.details.whatToExpect) && ev.details.whatToExpect.length) ||
+        (ev.details.locationNotes && ev.details.locationNotes.trim())
+      ))
+    );
+    // Clickability is wired via event delegation on #shows-grid (see renderShows).
+    // Inline onclick/onkeydown attributes were fragile — the first card sometimes
+    // failed to bind because of attribute escaping. Delegation guarantees every card works.
+    const clickableAttrs = hasDetails ? ' role="button" tabindex="0"' : '';
+    return `<div class="show-card${ev.tbd ? ' tbd' : ''}${hasDetails ? ' clickable' : ''}" data-lat="${ev.lat}" data-lng="${ev.lng}" data-default-order="${idx}" data-sort-date="${sortTs}" data-end-date="${endTs}" data-event-id="${escapeHtml(ev.id || '')}" data-search="${escapeHtml(searchBlob)}"${clickableAttrs}>
       <div class="show-card-header">
         <span class="upcoming-badge">Upcoming</span>
         <span class="state-badge state-${st}">${st === 'UNK' ? '?' : st} · ${stName}</span>
         <span class="show-num">${num}</span>
+        ${hasDetails ? '<span class="details-badge">Click for details →</span>' : ''}
       </div>
       <h2 class="show-name">${escapeHtml(ev.tbd ? (ev.name || 'Details Coming Soon') : ev.name)}</h2>
       <div class="show-fields">${fields}</div>
@@ -1174,7 +1196,37 @@
     document.getElementById('map-count-label').textContent =
       `📍 ${EVENTS.length} Show${EVENTS.length === 1 ? '' : 's'} Along the Gulf Coast`;
 
+    // Single "last verified" timestamp under the Live count.
+    const verifiedEl = document.getElementById('count-verified');
+    if (verifiedEl) {
+      const stamp = new Date().toLocaleString(undefined, {
+        year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
+      });
+      verifiedEl.textContent = `Last verified: ${stamp} ✓`;
+    }
+
+    // Event delegation: one click/keydown listener for the whole grid.
+    // Reliable for every card (including the first), regardless of attribute escaping.
+    if (!grid.dataset.delegated) {
+      grid.addEventListener('click', (e) => {
+        const card = e.target.closest('.show-card.clickable');
+        if (!card) return;
+        if (e.target.closest('a, button')) return;
+        openEventDetail(e, card.dataset.eventId);
+      });
+      grid.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        const card = e.target.closest('.show-card.clickable');
+        if (!card) return;
+        if (e.target.closest('a, button')) return;
+        e.preventDefault();
+        openEventDetail(e, card.dataset.eventId);
+      });
+      grid.dataset.delegated = '1';
+    }
+
     computeNextShow();
+    applyFilters();
   }
 
   function computeNextShow() {
@@ -1202,39 +1254,148 @@
   }
 
   // ===== Map =====
-  const map = L.map('hero-map', { zoomControl: true, scrollWheelZoom: false, attributionControl: false })
-    .setView([30.42, -87.2], 6);
+  // Guard against Leaflet CDN failing to load — without this the whole
+  // script would abort and cards/next-show would stay stuck on "Loading…".
+  let map = null;
+  let markerIcon = null;
+  const leafletReady = (typeof L !== 'undefined');
+  if (leafletReady) {
+    try {
+      map = L.map('hero-map', { zoomControl: true, scrollWheelZoom: false, attributionControl: false })
+        .setView([30.42, -87.2], 6);
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap &copy; CartoDB',
-    maxZoom: 19
-  }).addTo(map);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CartoDB',
+        maxZoom: 19
+      }).addTo(map);
 
-  const markerIcon = L.divIcon({
-    html: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.35))">
-      <circle cx="14" cy="14" r="13" fill="white" stroke="#ccc" stroke-width="1"/>
-      <path d="M1 14 Q1 1 14 1 Q27 1 27 14 Z" fill="#E53935"/>
-      <rect x="1" y="13" width="26" height="2.5" fill="#1A1A2E"/>
-      <circle cx="14" cy="14" r="5" fill="white" stroke="#1A1A2E" stroke-width="1.5"/>
-      <circle cx="14" cy="14" r="2.5" fill="#E53935"/>
-    </svg>`,
-    className: '',
-    iconSize: [28, 28],
-    iconAnchor: [14, 14],
-    popupAnchor: [0, -16]
-  });
+      markerIcon = L.divIcon({
+        html: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.35))">
+          <circle cx="14" cy="14" r="13" fill="white" stroke="#ccc" stroke-width="1"/>
+          <path d="M1 14 Q1 1 14 1 Q27 1 27 14 Z" fill="#E53935"/>
+          <rect x="1" y="13" width="26" height="2.5" fill="#1A1A2E"/>
+          <circle cx="14" cy="14" r="5" fill="white" stroke="#1A1A2E" stroke-width="1.5"/>
+          <circle cx="14" cy="14" r="2.5" fill="#E53935"/>
+        </svg>`,
+        className: '',
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+        popupAnchor: [0, -16]
+      });
+    } catch (err) {
+      console.warn('Leaflet init failed, continuing without map:', err);
+      map = null;
+    }
+  } else {
+    console.warn('Leaflet failed to load — map disabled, cards will still render.');
+    const mapEl = document.getElementById('hero-map');
+    if (mapEl) mapEl.innerHTML = '<div style="padding:24px;text-align:center;color:var(--muted);font-family:Inter,sans-serif;font-size:14px;">Map unavailable — show list below still works.</div>';
+  }
+
+
+  const eventMarkers = {}; // id -> Leaflet marker
+  let homeMarker = null;
 
   function renderMapMarkers() {
+    if (!map || !markerIcon) return;
+    Object.values(eventMarkers).forEach(m => map.removeLayer(m));
+
+    for (const k in eventMarkers) delete eventMarkers[k];
     EVENTS.forEach(ev => {
       if (typeof ev.lat !== 'number' || typeof ev.lng !== 'number') return;
-      L.marker([ev.lat, ev.lng], { icon: markerIcon })
-        .addTo(map)
+      const m = L.marker([ev.lat, ev.lng], { icon: markerIcon })
         .bindPopup(`
           <div class="popup-name">${escapeHtml(ev.tbd ? (ev.name || 'Details Coming Soon') : ev.name)}</div>
           <div class="popup-date">📅 ${escapeHtml(ev.dateDisplay)}</div>
           <div class="popup-loc">📍 ${escapeHtml(ev.location)}</div>
+          <div style="margin-top:8px;"><a href="#" data-scroll-id="${escapeHtml(ev.id || '')}" style="color:#1565C0;font-weight:700;">View card →</a></div>
         `);
+      m.on('popupopen', (e) => {
+        const link = e.popup.getElement().querySelector('[data-scroll-id]');
+        if (link) link.addEventListener('click', (ev2) => {
+          ev2.preventDefault();
+          const card = document.querySelector(`.show-card[data-event-id="${link.getAttribute('data-scroll-id')}"]`);
+          if (card) { card.scrollIntoView({ behavior:'smooth', block:'center' }); card.style.transition='box-shadow .3s'; card.style.boxShadow='0 0 0 3px var(--red)'; setTimeout(()=>card.style.boxShadow='',1600); }
+        });
+      });
+      eventMarkers[ev.id] = m;
     });
+  }
+
+  function syncMapToVisible(visibleIds) {
+    if (!map) return;
+    const bounds = [];
+
+    Object.entries(eventMarkers).forEach(([id, m]) => {
+      const visible = visibleIds.has(id);
+      if (visible) {
+        if (!map.hasLayer(m)) m.addTo(map);
+        const ll = m.getLatLng(); bounds.push([ll.lat, ll.lng]);
+      } else if (map.hasLayer(m)) {
+        map.removeLayer(m);
+      }
+    });
+    if (homeBase) {
+      if (!homeMarker) {
+        homeMarker = L.circleMarker([homeBase.lat, homeBase.lng], {
+          radius: 8, color: '#1565C0', fillColor: '#1565C0', fillOpacity: 0.9, weight: 2
+        }).bindPopup(`<div class="popup-name">🏠 ${escapeHtml(homeBase.label)}</div>`);
+      }
+      homeMarker.setLatLng([homeBase.lat, homeBase.lng]);
+      if (!map.hasLayer(homeMarker)) homeMarker.addTo(map);
+      bounds.push([homeBase.lat, homeBase.lng]);
+    } else if (homeMarker && map.hasLayer(homeMarker)) {
+      map.removeLayer(homeMarker);
+    }
+    if (bounds.length >= 2) {
+      map.fitBounds(bounds, { padding: [30, 30], maxZoom: 10 });
+    } else if (bounds.length === 1) {
+      map.setView(bounds[0], 9);
+    }
+  }
+
+  // ===== Filters (search + hide past) =====
+  function applyFilters() {
+    const grid = document.getElementById('shows-grid');
+    if (!grid) return;
+    const q = (document.getElementById('search-input')?.value || '').trim().toLowerCase();
+    const showPast = !!document.getElementById('show-past-toggle')?.checked;
+    const todayTs = (() => { const d = new Date(); d.setHours(0,0,0,0); return d.getTime(); })();
+
+    let visible = 0;
+    const visibleIds = new Set();
+    grid.querySelectorAll('.show-card').forEach(card => {
+      const endTs = parseInt(card.dataset.endDate) || 0;
+      const isPast = endTs > 0 && endTs < todayTs;
+      const blob = card.dataset.search || '';
+      const matches = !q || blob.includes(q);
+      const show = matches && (showPast || !isPast);
+      card.style.display = show ? '' : 'none';
+      if (show) { visible++; visibleIds.add(card.dataset.eventId); }
+    });
+
+    const countEl = document.getElementById('count-number');
+    if (countEl) countEl.textContent = visible;
+    const mapLabel = document.getElementById('map-count-label');
+    if (mapLabel) mapLabel.textContent = `📍 ${visible} Show${visible === 1 ? '' : 's'} Along the Gulf Coast`;
+
+    // Empty-state message
+    let empty = grid.querySelector('.empty-state');
+    if (visible === 0) {
+      if (!empty) {
+        empty = document.createElement('p');
+        empty.className = 'empty-state';
+        empty.style.cssText = 'grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 0;';
+        grid.appendChild(empty);
+      }
+      empty.textContent = q
+        ? `No shows match "${q}"${showPast ? '' : ' — try enabling "Show past events"'}.`
+        : (showPast ? 'No shows listed yet.' : 'No upcoming shows — tick "Show past events" to see previous ones.');
+    } else if (empty) {
+      empty.remove();
+    }
+
+    syncMapToVisible(visibleIds);
   }
 
   // ===== Add Your Show modal =====
@@ -1315,6 +1476,112 @@
     }
   }
 
+  // ===== Event detail modal =====
+  function splitVenueAddress(loc) {
+    if (!loc) return { venue: '', address: '' };
+    const i = loc.indexOf(',');
+    if (i === -1) return { venue: loc.trim(), address: '' };
+    return { venue: loc.slice(0, i).trim(), address: loc.slice(i + 1).trim() };
+  }
+  function cityStateFromLocation(loc) {
+    if (!loc) return '';
+    const parts = loc.split(',').map(s => s.trim()).filter(Boolean);
+    if (parts.length < 2) return '';
+    // Try to grab "City, ST"
+    const last = parts[parts.length - 1];
+    const stateMatch = last.match(/^([A-Z]{2})(?:\s+\d{5})?$/);
+    if (stateMatch && parts.length >= 2) {
+      return `${parts[parts.length - 2]}, ${stateMatch[1]}`;
+    }
+    return parts.slice(-2).join(', ');
+  }
+  function populateEventDetail(ev) {
+    const d = ev.details || {};
+    document.getElementById('detail-name').textContent = ev.name || '';
+    const cityState = cityStateFromLocation(ev.location);
+    document.getElementById('detail-sub').textContent =
+      [ev.dateDisplay, cityState].filter(Boolean).join(' · ');
+
+    // About
+    const aboutSec = document.getElementById('detail-about-sec');
+    if (d.about && d.about.trim()) {
+      document.getElementById('detail-about').textContent = d.about.trim();
+      aboutSec.hidden = false;
+    } else { aboutSec.hidden = true; }
+
+    // At a Glance
+    const glanceSec = document.getElementById('detail-glance-sec');
+    const glanceEl = document.getElementById('detail-glance');
+    if (Array.isArray(d.atAGlance) && d.atAGlance.length) {
+      glanceEl.innerHTML = d.atAGlance.map(cell =>
+        `<div class="detail-cell"><div class="k">${escapeHtml(cell.label || '')}</div><div class="v">${escapeHtml(cell.value || '')}</div></div>`
+      ).join('');
+      glanceSec.hidden = false;
+    } else { glanceSec.hidden = true; }
+
+    // What to Expect
+    const expectSec = document.getElementById('detail-expect-sec');
+    const expectEl = document.getElementById('detail-expect');
+    if (Array.isArray(d.whatToExpect) && d.whatToExpect.length) {
+      expectEl.innerHTML = d.whatToExpect.map(item => `<li>${escapeHtml(item)}</li>`).join('');
+      expectSec.hidden = false;
+    } else { expectSec.hidden = true; }
+
+    // Location
+    const locSec = document.getElementById('detail-loc-sec');
+    const { venue, address } = splitVenueAddress(ev.location);
+    if (venue || address) {
+      document.getElementById('detail-loc').innerHTML =
+        `<strong>${escapeHtml(venue)}</strong>${address ? '<br>' + escapeHtml(address) : ''}`;
+      const notesEl = document.getElementById('detail-loc-notes');
+      if (d.locationNotes && d.locationNotes.trim()) {
+        notesEl.textContent = d.locationNotes.trim();
+        notesEl.hidden = false;
+      } else { notesEl.hidden = true; }
+      locSec.hidden = false;
+    } else { locSec.hidden = true; }
+
+    // CTAs
+    const primary = document.getElementById('detail-cta-primary');
+    if (ev.websiteUrl) {
+      primary.href = ev.websiteUrl;
+      primary.textContent = ev.websiteLabel || '🌐 Website';
+      primary.hidden = false;
+    } else { primary.hidden = true; }
+    const directions = document.getElementById('detail-cta-directions');
+    directions.href = 'https://maps.google.com/?q=' + encodeURIComponent(ev.location || ev.name || '');
+  }
+
+  function openEventDetail(e, eventId) {
+    // Ignore clicks on links/buttons inside the card (Calendar, Report, Website)
+    if (e && e.target && e.target.closest('a, button')) return;
+    let ev = null;
+    if (eventId) ev = EVENTS.find(x => x.id === eventId);
+    if (!ev && e && e.currentTarget && e.currentTarget.dataset) {
+      ev = EVENTS.find(x => x.id === e.currentTarget.dataset.eventId);
+    }
+    if (!ev) return;
+    populateEventDetail(ev);
+    const m = document.getElementById('event-detail-modal');
+    if (!m) return;
+    m.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeEventDetail() {
+    const m = document.getElementById('event-detail-modal');
+    if (!m) return;
+    m.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function closeEventDetailOutside(e) {
+    if (e.target === document.getElementById('event-detail-modal')) closeEventDetail();
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeEventDetail();
+  });
+
+
+
   // ===== Home base + distance =====
   let homeBase = null;
   function loadHomeBase() {
@@ -1349,6 +1616,7 @@
       localStorage.setItem('gccs-home-base', JSON.stringify(homeBase));
       setStatus(`📍 Home base: ${homeBase.label}`);
       renderDistances();
+      applyFilters();
       const sel = document.getElementById('sort-select');
       if (sel && sel.value === 'default') { sel.value = 'distance'; applySort(); }
     } catch (e) {
@@ -1362,6 +1630,7 @@
     if (input) input.value = '';
     setStatus('');
     document.querySelectorAll('.distance-pill').forEach(p => p.remove());
+    applyFilters();
     const sel = document.getElementById('sort-select');
     if (sel) { sel.value = 'default'; applySort(); }
   }
