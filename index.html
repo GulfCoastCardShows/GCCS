@@ -145,7 +145,9 @@
   .show-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s; }
   .show-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
   .show-card.tbd { border-style: dashed; border-color: #ccc; background: #FAFAFA; }
-  .show-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .show-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 8px; }
+  .header-badges { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
   .upcoming-badge { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 11px; background: var(--dark); color: #fff; padding: 4px 10px; border-radius: 50px; letter-spacing: 0.06em; text-transform: uppercase; }
   .show-card.tbd .upcoming-badge { background: #999; }
   .show-num { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13px; color: var(--muted); }
@@ -186,7 +188,7 @@
   .show-card.clickable:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.18); }
   .show-card.clickable:focus-visible { outline: 3px solid var(--red); outline-offset: 3px; }
   .show-card.clickable .card-action-btn { position: relative; z-index: 2; }
-  .details-badge { margin-left: auto; background: #1565C0; color:#fff; font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 999px; letter-spacing: .3px; text-transform: uppercase; }
+  .details-badge { background: #1565C0; color:#fff; font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 999px; letter-spacing: .3px; text-transform: uppercase; }
   .detail-modal { max-width: 720px; }
   .detail-hero { background: linear-gradient(135deg, #E53935 0%, #1A1A2E 100%); color: #fff; margin: -36px -36px 24px; padding: 32px 36px; border-radius: var(--radius) var(--radius) 0 0; }
   .detail-hero h2 { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 30px; margin: 0 0 6px; line-height: 1.15; }
@@ -197,8 +199,8 @@
   .detail-section ul { padding-left: 20px; margin: 0; }
   .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
   .detail-grid .detail-cell { background: #f7f5ef; padding: 12px 14px; border-radius: 10px; }
-  .detail-grid .detail-cell .k { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); font-weight: 700; }
-  .detail-grid .detail-cell .v { font-size: 15px; font-weight: 600; color: var(--text); margin-top: 2px; }
+  .detail-grid .detail-cell .k { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: #6B7280; font-weight: 700; }
+  .detail-grid .detail-cell .v { font-size: 15px; font-weight: 600; color: #1A1A2E; margin-top: 2px; }
   .detail-cta { display: inline-block; background: var(--red); color:#fff; padding: 12px 20px; border-radius: 10px; font-weight: 800; text-decoration: none; margin-right: 8px; }
   .detail-cta.secondary { background: #1A1A2E; }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
@@ -846,7 +848,7 @@
       vendorFee: "",
       websiteUrl: "https://thefliptradeshow.com/pages/events-coming-up", websiteLabel: "🌐 thefliptradeshow.com",
       organizer: "The Flip Trade Show",
-      tbd: true,
+      tbd: false,
       authServices: { present: null, company: "" },
       details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
     },
@@ -898,8 +900,13 @@
       websiteUrl: "https://www.facebook.com/events/1872661796742511", websiteLabel: "📅 Facebook Event",
       organizer: "Card Town Pensacola",
       tbd: false,
-      authServices: { present: null, company: "" },
-      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },
+      authServices: { present: false, company: "" },
+      details: {
+        about: "Card Town is proud to announce that we are running back Card Town Pensacola for this Labor Day! Round two!\nCome day goodbye to summer and hello to Pensacola's newest sports cards, TCG/Pokémon and collectibles event!\nOver 91% of Americans have Labor Day off of work and we want to give you a fantastic reason to stay local and enjoy the day off, while buying those cardboard grails!\nCard Town returns to the Pensacola Interstate Fairgrounds Monday September 7th, 2026.",
+        atAGlance: [],
+        whatToExpect: ["Hour Early Access for only $10 starting at 9am.", "FREE PARKING", "FREE KIDS 15 & UNDER!", "Food Trucks", "Some of the best TCG and Pokémon Dealers in the South", "Loaded Sports Card Tables!", "Hourly Raffles"],
+        locationNotes: "",
+      },
     },
     {
       id: "evt-016",
@@ -1228,16 +1235,22 @@
         (ev.details.locationNotes && ev.details.locationNotes.trim())
       ))
     );
+    // Every card opens the detail modal — populateEventDetail() already hides
+    // any sections (About/At a Glance/What to Expect) that don't have data,
+    // so cards without extra details still show name, date, location & directions.
     // Clickability is wired via event delegation on #shows-grid (see renderShows).
     // Inline onclick/onkeydown attributes were fragile — the first card sometimes
     // failed to bind because of attribute escaping. Delegation guarantees every card works.
-    const clickableAttrs = hasDetails ? ' role="button" tabindex="0"' : '';
-    return `<div class="show-card${ev.tbd ? ' tbd' : ''}${hasDetails ? ' clickable' : ''}" data-lat="${ev.lat}" data-lng="${ev.lng}" data-default-order="${idx}" data-sort-date="${sortTs}" data-end-date="${endTs}" data-event-id="${escapeHtml(ev.id || '')}" data-search="${escapeHtml(searchBlob)}"${clickableAttrs}>
+    return `<div class="show-card${ev.tbd ? ' tbd' : ''} clickable" data-lat="${ev.lat}" data-lng="${ev.lng}" data-default-order="${idx}" data-sort-date="${sortTs}" data-end-date="${endTs}" data-event-id="${escapeHtml(ev.id || '')}" data-search="${escapeHtml(searchBlob)}" role="button" tabindex="0">
       <div class="show-card-header">
-        <span class="upcoming-badge">Upcoming</span>
-        <span class="state-badge state-${st}">${st === 'UNK' ? '?' : st} · ${stName}</span>
-        <span class="show-num">${num}</span>
-        ${hasDetails ? '<span class="details-badge">Click for details →</span>' : ''}
+        <div class="header-badges">
+          <span class="upcoming-badge">Upcoming</span>
+          <span class="state-badge state-${st}">${st === 'UNK' ? '?' : st} · ${stName}</span>
+        </div>
+        <div class="header-right">
+          <span class="show-num">${num}</span>
+          ${hasDetails ? '<span class="details-badge">Click for details →</span>' : ''}
+        </div>
       </div>
       <h2 class="show-name">${escapeHtml(ev.tbd ? (ev.name || 'Details Coming Soon') : ev.name)}</h2>
       <div class="show-fields">${fields}</div>
