@@ -1719,8 +1719,13 @@
   })();
 
   // ===== Init =====
-  renderShows();
+  // renderMapMarkers() must run before renderShows(), since renderShows()
+  // calls applyFilters() -> syncMapToVisible() which adds markers to the map
+  // from the eventMarkers map built by renderMapMarkers(). If that map is
+  // still empty (wrong order), no pokeball icons show up until something
+  // else happens to trigger applyFilters() again (e.g. setting a home base).
   renderMapMarkers();
+  renderShows();
   loadHomeBase();
 
   document.querySelector('a[href="#shows"]').addEventListener('click', function (e) {
