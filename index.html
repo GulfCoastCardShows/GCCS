@@ -297,6 +297,7 @@
 </head>
 <body>
 
+
 <nav>
   <a class="nav-logo" href="#">
     <img src="images/image2.png" alt="Gulf Coast Card Shows" style="height:48px; width:auto;">
@@ -322,7 +323,7 @@
   <div>
     <p class="hero-eyebrow">Pensacola, Florida &amp; the Gulf Coast</p>
     <h1 class="hero-title">Upcoming Shows</h1>
-    <p class="hero-desc">This is a list of all card shows happening along the Gulf Coast, centered around Pensacola, FL. The focus is primarily on Pokemon, but other trading cards and collectibles are included too. This is a free resource, and is updated as often as possible. Please share this resource with others so nobody misses out on a show!</p>
+    <p class="hero-desc">This is a list of all card shows happening along the Gulf Coast, centered around Pensacola, FL. The focus is primarily on Pokemon, but other card games are included too. This is a free resource, and is updated as often as possible. Please share this resource with others so nobody misses out on a show!</p>
     <div class="hero-tags">
       <span class="hero-tag red">⚡ Built by trainers</span>
       <span class="hero-tag blue">💙 Collector friendly</span>
@@ -331,20 +332,18 @@
   </div>
   <div class="hero-map-wrap">
     <div id="hero-map"></div>
-    <div class="map-label">📍 28 Shows Along the Gulf Coast</div>
+    <div class="map-label" id="map-count-label">📍 Loading…</div>
   </div>
 </section>
 
 <div class="stat-strip">
-  <div class="next-show-card">
-    <p class="next-label">Next show <span class="state-badge state-FL" style="margin-left:8px;vertical-align:middle;">FL · Florida</span></p>
-    <p class="next-name">The 850 Card Show</p>
-    <p class="next-date">Friday, July 10th &amp; Saturday, July 11th, 2026 · 3:00PM–8:00PM Friday, 9:00AM–3:00PM Saturday</p>
-    <p class="next-loc">North Florida Fairgrounds, 441 Paul Russell Rd, Tallahassee, FL 32301</p>
+  <div class="next-show-card" id="next-show-card">
+    <p class="next-label">Next show</p>
+    <p class="next-name">Loading…</p>
   </div>
   <div class="count-card">
     <p class="count-label">Live count</p>
-    <p class="count-number">28</p>
+    <p class="count-number" id="count-number">–</p>
     <p class="count-sub">Upcoming shows ready to browse.</p>
   </div>
 </div>
@@ -353,6 +352,7 @@
   <div class="shows-grid">
   </div>
 </section>
+
 <section class="shows-section" id="shows-controls-anchor" style="padding-bottom:0;">
   <div class="controls-card" style="margin-bottom:32px;">
     <div class="ctrl-group">
@@ -372,6 +372,7 @@
       <label class="ctrl-label" for="sort-select">Sort Shows By</label>
       <select id="sort-select" class="ctrl-select" onchange="applySort()">
         <option value="default">Default order</option>
+        <option value="date">Date (soonest first)</option>
         <option value="distance">Distance (nearest first)</option>
         <option value="distance-far">Distance (farthest first)</option>
       </select>
@@ -379,404 +380,10 @@
     <div id="home-base-status" class="ctrl-status"></div>
   </div>
 </section>
+
 <section class="shows-section" id="shows-real" style="padding-top:0;">
   <div class="shows-grid" id="shows-grid">
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#01</span></div>
-      <h2 class="show-name">The 850 Card Show</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">The 850 Card Show</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Friday, July 10th &amp; Saturday, July 11th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">3:00PM–8:00PM Fri · 9:00AM–3:00PM Sat</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">North Florida Fairgrounds, 441 Paul Russell Rd, Tallahassee, FL 32301</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://www.instagram.com/the850cardshow/?hl=en" target="_blank" rel="noopener">📸 Instagram</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">The 850 Card Show</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#02</span></div>
-      <h2 class="show-name">Anchor Up Card Show</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Anchor Up Card Show</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, July 11th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:00AM to 3:00PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">VFW Post 706, 5000 Lillian Hwy, Pensacola, FL 32506</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value">$50</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://anchorupcardshows.com/" target="_blank" rel="noopener">🌐 anchorupcardshows.com</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Anchor Up Card Shows</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#03</span></div>
-      <h2 class="show-name">Bay County Card Fest</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Bay County Card Fest</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, July 18th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">10:00AM to 7:00PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">Central Panhandle Fair, 2230 E 15th St, Panama City, FL 32405</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://www.instagram.com/baycountycardfest/" target="_blank" rel="noopener">📸 Instagram</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Bay County Card Fest</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#04</span></div>
-      <h2 class="show-name">Iconic Sports Cards &amp; Collectibles Show</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Iconic Sports Cards &amp; Collectibles Show</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Friday, July 24th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">10:00AM to 8:00PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">Rest &amp; Relax Inn, 7200 Plantation Rd, Pensacola, FL 32504</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value">$2</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value">$65–100</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://www.facebook.com/events/786240757812864/" target="_blank" rel="noopener">📅 Facebook Event</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Iconic Sports Cards &amp; Collectibles</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#05</span></div>
-      <h2 class="show-name">Cards on the Coast</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Cards on the Coast</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Friday, July 24th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">3:00PM to 8:00PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">Bay County Fairgrounds, 2230 E 15th St, Panama City, FL 32405</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://www.facebook.com/profile.php?id=100095608624898" target="_blank" rel="noopener">📘 Facebook</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Cards on the Coast</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#06</span></div>
-      <h2 class="show-name">Cards on the Coast</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Cards on the Coast</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, July 25th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:00AM to 4:00PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">University of West Florida HLS, 11000 University Pkwy, Pensacola, FL 32514</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://www.facebook.com/events/university-of-west-florida/cards-on-the-coast-2026/4052800554850499/" target="_blank" rel="noopener">📅 Facebook Event</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Cards on the Coast</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#07</span></div>
-      <h2 class="show-name">Coastal Collectors Expo</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Coastal Collectors Expo</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, July 25th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">10:00AM to 5:00PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">Pensacola Fairgrounds, 6655 Mobile Hwy, Pensacola, FL 32526</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value">$100</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://flcoastalcollectors.com/#about" target="_blank" rel="noopener">🌐 flcoastalcollectors.com</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Coastal Collectors Expo</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#08</span></div>
-      <h2 class="show-name">Gulf Breeze Card Clash</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Gulf Breeze Card Clash</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, August 1st, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:00AM to 5:00PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">800 Shoreline Dr, Gulf Breeze, FL 32561</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://www.facebook.com/events/959065157082890/" target="_blank" rel="noopener">📅 Facebook Event</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Gulf Breeze Card Clash</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#09</span></div>
-      <h2 class="show-name">Mid-South Collectible Toy Show</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Mid-South Collectible Toy Show</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, August 8th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:00AM to 2:30PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">5868 Stage Rd, Bartlett, TN 38134</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://www.facebook.com/p/The-Mid-South-Collectible-Toy-Show-61584028915878/" target="_blank" rel="noopener">📘 Facebook</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Mid-South Collectible Toy Show</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#10</span></div>
-      <h2 class="show-name">TheC2Show</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">TheC2Show</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, August 15th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:00AM to 5:00PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">D'Iberville High School Gym, 15625 Lamey Bridge Rd, Biloxi, MS 39532</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://www.facebook.com/profile.php?id=61578258239106" target="_blank" rel="noopener">📘 Facebook</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">TheC2Show</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#11</span></div>
-      <h2 class="show-name">Anchor Up Spectacular</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Anchor Up Spectacular</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, August 22nd, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">8:00AM to 4:00PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">Hilton Garden Inn, 1144 Airport Blvd, Pensacola, FL 32504</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://anchorupcardshows.com/" target="_blank" rel="noopener">🌐 anchorupcardshows.com</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Anchor Up Card Shows</span></div>
-      </div>
-    </div>
-    <div class="show-card tbd">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#12</span></div>
-      <h2 class="show-name">Details Coming Soon</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value unknown">TBD</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, August 22nd, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">Pensacola Fairgrounds, 6655 Mobile Hwy, Pensacola, FL 32526</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Unknown</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#13</span></div>
-      <h2 class="show-name">TCG Con Huntsville</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value unknown">TCG Con Huntsville</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, August 22nd to Sunday, August 23rd, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value unknown">10:00AM to 5:00PM Saturday and 11:00AM to 4:00PM Sunday</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">Von Braun Center East Halls, 700 Monroe St Southwest, Huntsville, AL 35801</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$10 - FREE for 13 and under!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">The Flip Trade Show</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#14</span></div>
-      <h2 class="show-name">Gulf Coast Card Show</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Gulf Coast Card Show</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, August 29th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:00AM to 5:00PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">Saraland Event Center, 72 Saraland Blvd South, Saraland, AL 36571</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value">$5</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://www.facebook.com/GulfCoastCardShow/photos/-big-news-the-gulf-coast-card-show-is-coming-to-saraland-calling-all-collectors-/1275820454712364/" target="_blank" rel="noopener">📘 Facebook</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Gulf Coast Card Show</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#15</span></div>
-      <h2 class="show-name">Iconic Sports Cards &amp; Collectibles Show</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Iconic Sports Cards &amp; Collectibles Show</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Friday, September 4th &amp; Saturday, September 5th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">10:00AM to 6:00PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">Rest &amp; Relax Inn, 7200 Plantation Rd, Pensacola, FL 32504</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value">$2</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value">$65–100</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://www.facebook.com/events/786240757812864/" target="_blank" rel="noopener">📅 Facebook Event</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Iconic Sports Cards &amp; Collectibles</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#16</span></div>
-      <h2 class="show-name">Card Town Pensacola Labor Day Showcase</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Card Town Pensacola Labor Day Showcase</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Monday, September 7th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">10:00AM to 3:00PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">Pensacola Fairgrounds, 6655 Mobile Hwy, Pensacola, FL 32526</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value">$5</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value">$60</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://www.facebook.com/events/1872661796742511" target="_blank" rel="noopener">📅 Facebook Event</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Card Town Pensacola</span></div>
-      </div>
-    </div>
-
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#17</span></div>
-      <h2 class="show-name">850 Sports Card Show</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">850 Sports Card Show</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Friday, September 11th &amp; Saturday, September 12th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">3:00PM–8:00PM Fri · 9:00AM–3:00PM Sat</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">North Florida Fairgrounds, 441 Paul Russell Rd, Tallahassee, FL 32301</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://850sportscards.net" target="_blank" rel="noopener">🌐 850sportscards.net</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">850 Sports Cards</span></div>
-      </div>
-    </div>
-
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#18</span></div>
-      <h2 class="show-name">MobTown Card Show</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">MobTown Card Show</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Friday, September 11th &amp; Saturday, September 12th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">3:00PM–8:00PM Fri · 9:00AM–3:00PM Sat</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">The Grand Hall, 3556 Halls Mill Rd, Mobile, AL 36693</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value">$80</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://www.facebook.com/events/the-grand-hall/mobtown-card-show-sep-26th-2026/1000135239066403/" target="_blank" rel="noopener">📅 Facebook Event</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">MobTown Cards &amp; Collectibles</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#19</span></div>
-      <h2 class="show-name">Anchor Up Card Show</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Anchor Up Card Show</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, September 12th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:00AM to 3:00PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">VFW Post 706, 5000 Lillian Hwy, Pensacola, FL 32506</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value">$50</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://anchorupcardshows.com" target="_blank" rel="noopener">🌐 anchorupcardshows.com</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Anchor Up Card Shows</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#20</span></div>
-      <h2 class="show-name">DJ's Trade Show</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">DJ's Trade Show</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, October 3rd, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:00AM to 5:00PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">ABBA Shrine, 7701 Hitt Road, Mobile, AL 36695</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://www.facebook.com/events/4253146798278339" target="_blank" rel="noopener">📅 Facebook Event</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">DJ's Trade Show</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#21</span></div>
-      <h2 class="show-name">Anchor Up Card Show</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Anchor Up Card Show</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, October 10th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:00AM to 3:00PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">VFW Post 706, 5000 Lillian Hwy, Pensacola, FL 32506</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value">$50</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://anchorupcardshows.com/" target="_blank" rel="noopener">🌐 anchorupcardshows.com</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Anchor Up Card Shows</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#22</span></div>
-      <h2 class="show-name">Mid-South Collectible Toy Show</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Mid-South Collectible Toy Show</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, October 24th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:00AM to 2:30PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">5868 Stage Rd, Bartlett, TN 38134</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://www.facebook.com/p/The-Mid-South-Collectible-Toy-Show-61584028915878/" target="_blank" rel="noopener">📘 Facebook</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Mid-South Collectible Toy Show</span></div>
-      </div>
-    </div>
-
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#23</span></div>
-      <h2 class="show-name">NASH-IONAL Nashville Sports Card Show</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">NASH-IONAL Nashville Sports Card Show</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Friday, October 30th &amp; Saturday, November 1st, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">12:00PM–6:00PM Fri · 10:00AM–3:00PM Sat</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">The Fairgrounds Nashville, 401 Wingrove Street, Nashville, TN 37204</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://www.instagram.com/nashcardshow/" target="_blank" rel="noopener">📸 Instagram</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Nashville Card Show</span></div>
-      </div>
-    </div>
-
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#24</span></div>
-      <h2 class="show-name">Mid-South Card Con</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Mid-South Card Con</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Friday, October 30th &amp; Saturday, November 1st, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">Biloxi Civic Center, 578 Howard Ave, Biloxi, MS</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value">$5</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value">$85–110</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://midsouthcardcon.com" target="_blank" rel="noopener">🌐 midsouthcardcon.com</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Mid-South Card Con</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#25</span></div>
-      <h2 class="show-name">Anchor Up Card Show</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Anchor Up Card Show</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, November 14th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:00AM to 3:00PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">VFW Post 706, 5000 Lillian Hwy, Pensacola, FL 32506</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value">$50</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://anchorupcardshows.com/" target="_blank" rel="noopener">🌐 anchorupcardshows.com</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Anchor Up Card Shows</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#26</span></div>
-      <h2 class="show-name">Emerald Coast Collectors Showcase</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Emerald Coast Collectors Showcase</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, November 28th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:30AM to 4:30PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">VFW Post 706, 5000 Lillian Hwy, Pensacola, FL 32506</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://www.facebook.com/photo/?fbid=36162817626665257&set=a.183116718395470" target="_blank" rel="noopener">📅 Facebook</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Emerald Coast Collectors Showcase</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#27</span></div>
-      <h2 class="show-name">The 850 Card Show</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">The 850 Card Show</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Friday, December 4th &amp; Saturday, December 5th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">3:00PM–8:00PM Fri · 9:00AM–3:00PM Sat</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">North Florida Fairgrounds, 441 Paul Russell Rd, Tallahassee, FL 32301</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://www.facebook.com/profile.php?id=100095608624898" target="_blank" rel="noopener">📘 Facebook</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">The 850 Card Show</span></div>
-      </div>
-    </div>
-    <div class="show-card">
-      <div class="show-card-header"><span class="upcoming-badge">Upcoming</span><span class="show-num">#28</span></div>
-      <h2 class="show-name">Mid-South Collectible Toy Show</h2>
-      <div class="show-fields">
-        <div class="field-group"><span class="field-label">Event Name</span><span class="field-value">Mid-South Collectible Toy Show</span></div>
-        <div class="field-group"><span class="field-label">Event Date</span><span class="field-value">Saturday, December 19th, 2026</span></div>
-        <div class="field-group"><span class="field-label">Event Time</span><span class="field-value">9:00AM to 2:30PM</span></div>
-        <div class="field-group"><span class="field-label">Event Location</span><span class="field-value">5868 Stage Rd, Bartlett, TN 38134</span></div>
-        <div class="field-group"><span class="field-label">Entry Fee</span><span class="field-value free">$0 — Free!</span></div>
-        <div class="field-group"><span class="field-label">Vendor Fee</span><span class="field-value unknown">Unknown</span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="https://www.facebook.com/p/The-Mid-South-Collectible-Toy-Show-61584028915878/" target="_blank" rel="noopener">📘 Facebook</a></span></div>
-        <div class="field-group" style="grid-column:1/-1"><span class="field-label">Organizer</span><span class="field-value organizer">Mid-South Collectible Toy Show</span></div>
-      </div>
-    </div>
-
-
+    <!-- Rendered automatically from the EVENTS array below -->
   </div>
 </section>
 
@@ -880,110 +487,6 @@
   })();
 </script>
 
-<script>
-  // --- MAP ---
-  const shows = [
-    { name: "The 850 Card Show", date: "July 10–11, 2026", loc: "North Florida Fairgrounds, Tallahassee, FL", lat: 30.4041, lng: -84.2800 },
-    { name: "Anchor Up Card Show", date: "July 11, 2026", loc: "VFW Post 706, Pensacola, FL", lat: 30.4267, lng: -87.2859 },
-    { name: "Bay County Card Fest", date: "July 18, 2026", loc: "Central Panhandle Fair, Panama City, FL", lat: 30.1744, lng: -85.6341 },
-    { name: "Coastal Collectors Expo", date: "July 25, 2026", loc: "Pensacola Fairgrounds, Pensacola, FL", lat: 30.4734, lng: -87.3109 },
-    { name: "Gulf Breeze Card Clash", date: "August 1, 2026", loc: "800 Shoreline Dr, Gulf Breeze, FL", lat: 30.3547, lng: -87.1787 },
-    { name: "TheC2Show", date: "August 15, 2026", loc: "D'Iberville High School Gym, Biloxi, MS", lat: 30.5117, lng: -88.9328 },
-    { name: "Anchor Up Spectacular", date: "August 22, 2026", loc: "Hilton Garden Inn, Pensacola, FL", lat: 30.4797, lng: -87.2157 },
-    { name: "TBD Show", date: "August 22, 2026", loc: "Pensacola Fairgrounds, Pensacola, FL", lat: 30.4720, lng: -87.3090 },
-    { name: "Card Town Pensacola Labor Day Showcase", date: "September 7, 2026", loc: "Pensacola Fairgrounds, Pensacola, FL", lat: 30.4720, lng: -87.3090 },
-    { name: "Anchor Up Card Show", date: "October 10, 2026", loc: "VFW Post 706, Pensacola, FL", lat: 30.4280, lng: -87.2840 },
-    { name: "DJ's Trade Show", date: "October 3, 2026", loc: "ABBA Shrine, Mobile, AL", lat: 30.6671, lng: -88.2234 },
-    { name: "Anchor Up Card Show", date: "November 14, 2026", loc: "VFW Post 706, Pensacola, FL", lat: 30.4255, lng: -87.2870 },
-    { name: "Iconic Sports Cards & Collectibles Show", date: "July 24, 2026", loc: "Rest & Relax Inn, Pensacola, FL", lat: 30.4890, lng: -87.2100 },
-    { name: "Cards on the Coast", date: "July 24, 2026", loc: "University of West Florida, Pensacola, FL", lat: 30.5503, lng: -87.2191 },
-    { name: "Cards on the Coast", date: "July 24, 2026", loc: "Bay County Fairgrounds, Panama City, FL", lat: 30.1744, lng: -85.6341 },
-    { name: "Iconic Sports Cards & Collectibles Show", date: "September 4-5, 2026", loc: "Rest & Relax Inn, Pensacola, FL", lat: 30.4895, lng: -87.2105 },
-    { name: "Anchor Up Card Show", date: "September 12, 2026", loc: "VFW Post 706, Pensacola, FL", lat: 30.4262, lng: -87.2855 },
-    { name: "Emerald Coast Collectors Showcase", date: "November 28, 2026", loc: "VFW Post 706, Pensacola, FL", lat: 30.4270, lng: -87.2848 },
-    { name: "The 850 Card Show", date: "December 4-5, 2026", loc: "North Florida Fairgrounds, Tallahassee, FL", lat: 30.4041, lng: -84.2800 },
-    { name: "Mid-South Collectible Toy Show", date: "August 8, 2026", loc: "5868 Stage Rd, Bartlett, TN", lat: 35.2087, lng: -89.8732 },
-    { name: "Mid-South Collectible Toy Show", date: "October 24, 2026", loc: "5868 Stage Rd, Bartlett, TN", lat: 35.2087, lng: -89.8732 },
-    { name: "Mid-South Collectible Toy Show", date: "December 19, 2026", loc: "5868 Stage Rd, Bartlett, TN", lat: 35.2087, lng: -89.8732 },
-    { name: "Gulf Coast Card Show", date: "August 29, 2026", loc: "Saraland Event Center, Saraland, AL", lat: 30.8210, lng: -88.0687 },
-    { name: "850 Sports Card Show", date: "September 11-12, 2026", loc: "North Florida Fairgrounds, Tallahassee, FL", lat: 30.4041, lng: -84.2800 },
-    { name: "MobTown Card Show", date: "September 11-12, 2026", loc: "The Grand Hall, Mobile, AL", lat: 30.6177, lng: -88.1789 },
-    { name: "NASH-IONAL Nashville Sports Card Show", date: "October 30 - November 1, 2026", loc: "The Fairgrounds Nashville, Nashville, TN", lat: 36.1423, lng: -86.7743 },
-    { name: "Mid-South Card Con", date: "October 30 - November 1, 2026", loc: "Biloxi Civic Center, Biloxi, MS", lat: 30.3960, lng: -88.8853 },
-  ];
-
-  const map = L.map('hero-map', { zoomControl: true, scrollWheelZoom: false, attributionControl: false })
-    .setView([30.42, -87.2], 6);
-
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap &copy; CartoDB',
-    maxZoom: 19
-  }).addTo(map);
-
-  // Custom red pokeball-style marker
-  const markerIcon = L.divIcon({
-    html: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.35))">
-      <circle cx="14" cy="14" r="13" fill="white" stroke="#ccc" stroke-width="1"/>
-      <path d="M1 14 Q1 1 14 1 Q27 1 27 14 Z" fill="#E53935"/>
-      <rect x="1" y="13" width="26" height="2.5" fill="#1A1A2E"/>
-      <circle cx="14" cy="14" r="5" fill="white" stroke="#1A1A2E" stroke-width="1.5"/>
-      <circle cx="14" cy="14" r="2.5" fill="#E53935"/>
-    </svg>`,
-    className: '',
-    iconSize: [28, 28],
-    iconAnchor: [14, 14],
-    popupAnchor: [0, -16]
-  });
-
-  shows.forEach(s => {
-    L.marker([s.lat, s.lng], { icon: markerIcon })
-      .addTo(map)
-      .bindPopup(`
-        <div class="popup-name">${s.name}</div>
-        <div class="popup-date">📅 ${s.date}</div>
-        <div class="popup-loc">📍 ${s.loc}</div>
-      `);
-  });
-
-  // --- MODAL ---
-  function openModal() { document.getElementById('modal').classList.add('open'); document.body.style.overflow = 'hidden'; }
-  function closeModal() { document.getElementById('modal').classList.remove('open'); document.body.style.overflow = ''; }
-  function closeModalOutside(e) { if (e.target === document.getElementById('modal')) closeModal(); }
-  async function handleSubmit(e) {
-    e.preventDefault();
-    const form = document.getElementById('show-form');
-    const btn = form.querySelector('.submit-btn');
-    btn.textContent = 'Sending…';
-    btn.disabled = true;
-    try {
-      const res = await fetch(form.action, {
-        method: 'POST',
-        body: new FormData(form),
-        headers: { 'Accept': 'application/json' }
-      });
-      if (res.ok) {
-        btn.textContent = '✅ Submitted!';
-        setTimeout(() => { closeModal(); form.reset(); btn.textContent = 'Submit Show for Review ⚡'; btn.disabled = false; }, 1800);
-      } else {
-        btn.textContent = '❌ Error — try again';
-        btn.disabled = false;
-      }
-    } catch {
-      btn.textContent = '❌ Network error';
-      btn.disabled = false;
-    }
-  }
-
-  function openContact() { document.getElementById('contact-modal').classList.add('open'); document.body.style.overflow = 'hidden'; }
-  function closeContact() { document.getElementById('contact-modal').classList.remove('open'); document.body.style.overflow = ''; }
-  function closeContactOutside(e) { if (e.target === document.getElementById('contact-modal')) closeContact(); }
-
-  document.querySelector('a[href="#shows"]').addEventListener('click', function(e) {
-    e.preventDefault();
-    document.getElementById('shows').scrollIntoView({ behavior: 'smooth' });
-  });
-</script>
-
 <!-- CONTACT MODAL -->
 <div class="modal-overlay" id="contact-modal" onclick="closeContactOutside(event)">
   <div class="modal" style="max-width:420px;">
@@ -1052,23 +555,438 @@
 </div>
 
 <script>
-  // ===== Last updated timestamp (based on document edit time) =====
-  (function() {
-    try {
-      const el = document.getElementById('last-updated-stamp');
-      if (!el) return;
-      // Uses the last build/deploy date — refreshed every time the file is updated.
-      const d = new Date(document.lastModified);
-      const opts = { year:'numeric', month:'long', day:'numeric', hour:'numeric', minute:'2-digit' };
-      el.textContent = isNaN(d.getTime()) ? '—' : d.toLocaleString(undefined, opts);
-    } catch (e) { /* noop */ }
-  })();
+  /* =====================================================================
+     EVENTS DATA
+     This is the single source of truth for every show on the site.
+     Card layout, numbering, the map, the live count, and the "Next show"
+     box are all generated automatically from this list — nothing below
+     this array should need hand-editing.
 
-  // ===== State color/name map =====
+     Prefer using admin.html (open it locally in Chrome or Edge) to add,
+     edit, reorder, or remove shows instead of editing this array by hand.
+     ===================================================================== */
+  /* ==EVENTS-DATA-START== */
+  const EVENTS = [
+    {
+      id: "evt-001",
+      name: "The 850 Card Show",
+      startDate: "2026-07-10", endDate: "2026-07-11",
+      dateDisplay: "Friday, July 10th & Saturday, July 11th, 2026",
+      time: "3:00PM–8:00PM Fri · 9:00AM–3:00PM Sat",
+      timeUnknown: false,
+      location: "North Florida Fairgrounds, 441 Paul Russell Rd, Tallahassee, FL 32301",
+      lat: 30.4041, lng: -84.28,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "",
+      websiteUrl: "https://www.instagram.com/the850cardshow/?hl=en", websiteLabel: "📸 Instagram",
+      organizer: "The 850 Card Show",
+      tbd: false,
+    },
+    {
+      id: "evt-002",
+      name: "Anchor Up Card Show",
+      startDate: "2026-07-11", endDate: "2026-07-11",
+      dateDisplay: "Saturday, July 11th, 2026",
+      time: "9:00AM to 3:00PM",
+      timeUnknown: false,
+      location: "VFW Post 706, 5000 Lillian Hwy, Pensacola, FL 32506",
+      lat: 30.4267, lng: -87.2859,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "$50",
+      websiteUrl: "https://anchorupcardshows.com/", websiteLabel: "🌐 anchorupcardshows.com",
+      organizer: "Anchor Up Card Shows",
+      tbd: false,
+    },
+    {
+      id: "evt-003",
+      name: "Bay County Card Fest",
+      startDate: "2026-07-18", endDate: "2026-07-18",
+      dateDisplay: "Saturday, July 18th, 2026",
+      time: "10:00AM to 7:00PM",
+      timeUnknown: false,
+      location: "Central Panhandle Fair, 2230 E 15th St, Panama City, FL 32405",
+      lat: 30.1744, lng: -85.6341,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "",
+      websiteUrl: "https://www.instagram.com/baycountycardfest/", websiteLabel: "📸 Instagram",
+      organizer: "Bay County Card Fest",
+      tbd: false,
+    },
+    {
+      id: "evt-004",
+      name: "Iconic Sports Cards & Collectibles Show",
+      startDate: "2026-07-24", endDate: "2026-07-24",
+      dateDisplay: "Friday, July 24th, 2026",
+      time: "10:00AM to 8:00PM",
+      timeUnknown: false,
+      location: "Rest & Relax Inn, 7200 Plantation Rd, Pensacola, FL 32504",
+      lat: 30.4734, lng: -87.3109,
+      entryFee: "$2", entryFree: false,
+      vendorFee: "$65–100",
+      websiteUrl: "https://www.facebook.com/events/786240757812864/", websiteLabel: "📅 Facebook Event",
+      organizer: "Iconic Sports Cards & Collectibles",
+      tbd: false,
+    },
+    {
+      id: "evt-005",
+      name: "Cards on the Coast",
+      startDate: "2026-07-24", endDate: "2026-07-24",
+      dateDisplay: "Friday, July 24th, 2026",
+      time: "3:00PM to 8:00PM",
+      timeUnknown: false,
+      location: "Bay County Fairgrounds, 2230 E 15th St, Panama City, FL 32405",
+      lat: 30.3547, lng: -87.1787,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "",
+      websiteUrl: "https://www.facebook.com/profile.php?id=100095608624898", websiteLabel: "📘 Facebook",
+      organizer: "Cards on the Coast",
+      tbd: false,
+    },
+    {
+      id: "evt-006",
+      name: "Cards on the Coast",
+      startDate: "2026-07-25", endDate: "2026-07-25",
+      dateDisplay: "Saturday, July 25th, 2026",
+      time: "9:00AM to 4:00PM",
+      timeUnknown: false,
+      location: "University of West Florida HLS, 11000 University Pkwy, Pensacola, FL 32514",
+      lat: 30.5117, lng: -88.9328,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "",
+      websiteUrl: "https://www.facebook.com/events/university-of-west-florida/cards-on-the-coast-2026/4052800554850499/", websiteLabel: "📅 Facebook Event",
+      organizer: "Cards on the Coast",
+      tbd: false,
+    },
+    {
+      id: "evt-007",
+      name: "Coastal Collectors Expo",
+      startDate: "2026-07-25", endDate: "2026-07-25",
+      dateDisplay: "Saturday, July 25th, 2026",
+      time: "10:00AM to 5:00PM",
+      timeUnknown: false,
+      location: "Pensacola Fairgrounds, 6655 Mobile Hwy, Pensacola, FL 32526",
+      lat: 30.4797, lng: -87.2157,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "$100",
+      websiteUrl: "https://flcoastalcollectors.com/#about", websiteLabel: "🌐 flcoastalcollectors.com",
+      organizer: "Coastal Collectors Expo",
+      tbd: false,
+    },
+    {
+      id: "evt-008",
+      name: "Gulf Breeze Card Clash",
+      startDate: "2026-08-01", endDate: "2026-08-01",
+      dateDisplay: "Saturday, August 1st, 2026",
+      time: "9:00AM to 5:00PM",
+      timeUnknown: false,
+      location: "800 Shoreline Dr, Gulf Breeze, FL 32561",
+      lat: 30.472, lng: -87.309,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "",
+      websiteUrl: "https://www.facebook.com/events/959065157082890/", websiteLabel: "📅 Facebook Event",
+      organizer: "Gulf Breeze Card Clash",
+      tbd: false,
+    },
+    {
+      id: "evt-009",
+      name: "Mid-South Collectible Toy Show",
+      startDate: "2026-08-08", endDate: "2026-08-08",
+      dateDisplay: "Saturday, August 8th, 2026",
+      time: "9:00AM to 2:30PM",
+      timeUnknown: false,
+      location: "5868 Stage Rd, Bartlett, TN 38134",
+      lat: 30.472, lng: -87.309,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "",
+      websiteUrl: "https://www.facebook.com/p/The-Mid-South-Collectible-Toy-Show-61584028915878/", websiteLabel: "📘 Facebook",
+      organizer: "Mid-South Collectible Toy Show",
+      tbd: false,
+    },
+    {
+      id: "evt-010",
+      name: "TheC2Show",
+      startDate: "2026-08-15", endDate: "2026-08-15",
+      dateDisplay: "Saturday, August 15th, 2026",
+      time: "9:00AM to 5:00PM",
+      timeUnknown: false,
+      location: "D'Iberville High School Gym, 15625 Lamey Bridge Rd, Biloxi, MS 39532",
+      lat: 30.428, lng: -87.284,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "",
+      websiteUrl: "https://www.facebook.com/profile.php?id=61578258239106", websiteLabel: "📘 Facebook",
+      organizer: "TheC2Show",
+      tbd: false,
+    },
+    {
+      id: "evt-011",
+      name: "Anchor Up Spectacular",
+      startDate: "2026-08-22", endDate: "2026-08-22",
+      dateDisplay: "Saturday, August 22nd, 2026",
+      time: "8:00AM to 4:00PM",
+      timeUnknown: false,
+      location: "Hilton Garden Inn, 1144 Airport Blvd, Pensacola, FL 32504",
+      lat: 30.6671, lng: -88.2234,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "",
+      websiteUrl: "https://anchorupcardshows.com/", websiteLabel: "🌐 anchorupcardshows.com",
+      organizer: "Anchor Up Card Shows",
+      tbd: false,
+    },
+    {
+      id: "evt-012",
+      name: "TCG Con Huntsville",
+      startDate: "2026-08-22", endDate: "2026-08-23",
+      dateDisplay: "Saturday, August 22nd & Sunday, August 23rd, 2026",
+      time: "10:00AM to 5:00PM Saturday, 11:00AM to 4:00PM Sunday",
+      timeUnknown: false,
+      location: "Von Braun Center East Halls, 700 Monroe St Southwest, Huntsville, AL 35801",
+      lat: 34.7278721, lng: -86.5905763,
+      entryFee: "$10 - FREE for 13 and under", entryFree: false,
+      vendorFee: "",
+      websiteUrl: "https://thefliptradeshow.com/pages/events-coming-up", websiteLabel: "🌐 thefliptradeshow.com",
+      organizer: "The Flip Trade Show",
+      tbd: true,
+    },
+    {
+      id: "evt-013",
+      name: "Gulf Coast Card Show",
+      startDate: "2026-08-29", endDate: "2026-08-29",
+      dateDisplay: "Saturday, August 29th, 2026",
+      time: "9:00AM to 5:00PM",
+      timeUnknown: false,
+      location: "Saraland Event Center, 72 Saraland Blvd South, Saraland, AL 36571",
+      lat: 30.489, lng: -87.21,
+      entryFee: "$5", entryFree: false,
+      vendorFee: "",
+      websiteUrl: "https://www.facebook.com/GulfCoastCardShow/photos/-big-news-the-gulf-coast-card-show-is-coming-to-saraland-calling-all-collectors-/1275820454712364/", websiteLabel: "📘 Facebook",
+      organizer: "Gulf Coast Card Show",
+      tbd: false,
+    },
+    {
+      id: "evt-014",
+      name: "Iconic Sports Cards & Collectibles Show",
+      startDate: "2026-09-04", endDate: "2026-09-05",
+      dateDisplay: "Friday, September 4th & Saturday, September 5th, 2026",
+      time: "10:00AM to 6:00PM",
+      timeUnknown: false,
+      location: "Rest & Relax Inn, 7200 Plantation Rd, Pensacola, FL 32504",
+      lat: 30.5503, lng: -87.2191,
+      entryFee: "$2", entryFree: false,
+      vendorFee: "$65–100",
+      websiteUrl: "https://www.facebook.com/events/786240757812864/", websiteLabel: "📅 Facebook Event",
+      organizer: "Iconic Sports Cards & Collectibles",
+      tbd: false,
+    },
+    {
+      id: "evt-015",
+      name: "Card Town Pensacola Labor Day Showcase",
+      startDate: "2026-09-07", endDate: "2026-09-07",
+      dateDisplay: "Monday, September 7th, 2026",
+      time: "10:00AM to 3:00PM",
+      timeUnknown: false,
+      location: "Pensacola Fairgrounds, 6655 Mobile Hwy, Pensacola, FL 32526",
+      lat: 30.1744, lng: -85.6341,
+      entryFee: "$5", entryFree: false,
+      vendorFee: "$60",
+      websiteUrl: "https://www.facebook.com/events/1872661796742511", websiteLabel: "📅 Facebook Event",
+      organizer: "Card Town Pensacola",
+      tbd: false,
+    },
+    {
+      id: "evt-016",
+      name: "850 Sports Card Show",
+      startDate: "2026-09-11", endDate: "2026-09-12",
+      dateDisplay: "Friday, September 11th & Saturday, September 12th, 2026",
+      time: "3:00PM–8:00PM Fri · 9:00AM–3:00PM Sat",
+      timeUnknown: false,
+      location: "North Florida Fairgrounds, 441 Paul Russell Rd, Tallahassee, FL 32301",
+      lat: 30.4895, lng: -87.2105,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "",
+      websiteUrl: "https://850sportscards.net", websiteLabel: "🌐 850sportscards.net",
+      organizer: "850 Sports Cards",
+      tbd: false,
+    },
+    {
+      id: "evt-017",
+      name: "MobTown Card Show",
+      startDate: "2026-09-11", endDate: "2026-09-12",
+      dateDisplay: "Friday, September 11th & Saturday, September 12th, 2026",
+      time: "3:00PM–8:00PM Fri · 9:00AM–3:00PM Sat",
+      timeUnknown: false,
+      location: "The Grand Hall, 3556 Halls Mill Rd, Mobile, AL 36693",
+      lat: 30.4262, lng: -87.2855,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "$80",
+      websiteUrl: "https://www.facebook.com/events/the-grand-hall/mobtown-card-show-sep-26th-2026/1000135239066403/", websiteLabel: "📅 Facebook Event",
+      organizer: "MobTown Cards & Collectibles",
+      tbd: false,
+    },
+    {
+      id: "evt-018",
+      name: "Anchor Up Card Show",
+      startDate: "2026-09-12", endDate: "2026-09-12",
+      dateDisplay: "Saturday, September 12th, 2026",
+      time: "9:00AM to 3:00PM",
+      timeUnknown: false,
+      location: "VFW Post 706, 5000 Lillian Hwy, Pensacola, FL 32506",
+      lat: 30.427, lng: -87.2848,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "$50",
+      websiteUrl: "https://anchorupcardshows.com", websiteLabel: "🌐 anchorupcardshows.com",
+      organizer: "Anchor Up Card Shows",
+      tbd: false,
+    },
+    {
+      id: "evt-019",
+      name: "DJ's Trade Show",
+      startDate: "2026-10-03", endDate: "2026-10-03",
+      dateDisplay: "Saturday, October 3rd, 2026",
+      time: "9:00AM to 5:00PM",
+      timeUnknown: false,
+      location: "ABBA Shrine, 7701 Hitt Road, Mobile, AL 36695",
+      lat: 30.4041, lng: -84.28,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "",
+      websiteUrl: "https://www.facebook.com/events/4253146798278339", websiteLabel: "📅 Facebook Event",
+      organizer: "DJ's Trade Show",
+      tbd: false,
+    },
+    {
+      id: "evt-020",
+      name: "Anchor Up Card Show",
+      startDate: "2026-10-10", endDate: "2026-10-10",
+      dateDisplay: "Saturday, October 10th, 2026",
+      time: "9:00AM to 3:00PM",
+      timeUnknown: false,
+      location: "VFW Post 706, 5000 Lillian Hwy, Pensacola, FL 32506",
+      lat: 35.2087, lng: -89.8732,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "$50",
+      websiteUrl: "https://anchorupcardshows.com/", websiteLabel: "🌐 anchorupcardshows.com",
+      organizer: "Anchor Up Card Shows",
+      tbd: false,
+    },
+    {
+      id: "evt-021",
+      name: "Mid-South Collectible Toy Show",
+      startDate: "2026-10-24", endDate: "2026-10-24",
+      dateDisplay: "Saturday, October 24th, 2026",
+      time: "9:00AM to 2:30PM",
+      timeUnknown: false,
+      location: "5868 Stage Rd, Bartlett, TN 38134",
+      lat: 35.2087, lng: -89.8732,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "",
+      websiteUrl: "https://www.facebook.com/p/The-Mid-South-Collectible-Toy-Show-61584028915878/", websiteLabel: "📘 Facebook",
+      organizer: "Mid-South Collectible Toy Show",
+      tbd: false,
+    },
+    {
+      id: "evt-022",
+      name: "NASH-IONAL Nashville Sports Card Show",
+      startDate: "2026-10-30", endDate: "2026-11-01",
+      dateDisplay: "Friday, October 30th & Saturday, November 1st, 2026",
+      time: "12:00PM–6:00PM Fri · 10:00AM–3:00PM Sat",
+      timeUnknown: false,
+      location: "The Fairgrounds Nashville, 401 Wingrove Street, Nashville, TN 37204",
+      lat: 35.2087, lng: -89.8732,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "",
+      websiteUrl: "https://www.instagram.com/nashcardshow/", websiteLabel: "📸 Instagram",
+      organizer: "Nashville Card Show",
+      tbd: false,
+    },
+    {
+      id: "evt-023",
+      name: "Mid-South Card Con",
+      startDate: "2026-10-30", endDate: "2026-11-01",
+      dateDisplay: "Friday, October 30th & Saturday, November 1st, 2026",
+      time: "",
+      timeUnknown: true,
+      location: "Biloxi Civic Center, 578 Howard Ave, Biloxi, MS",
+      lat: 30.821, lng: -88.0687,
+      entryFee: "$5", entryFree: false,
+      vendorFee: "$85–110",
+      websiteUrl: "https://midsouthcardcon.com", websiteLabel: "🌐 midsouthcardcon.com",
+      organizer: "Mid-South Card Con",
+      tbd: false,
+    },
+    {
+      id: "evt-024",
+      name: "Anchor Up Card Show",
+      startDate: "2026-11-14", endDate: "2026-11-14",
+      dateDisplay: "Saturday, November 14th, 2026",
+      time: "9:00AM to 3:00PM",
+      timeUnknown: false,
+      location: "VFW Post 706, 5000 Lillian Hwy, Pensacola, FL 32506",
+      lat: 30.4041, lng: -84.28,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "$50",
+      websiteUrl: "https://anchorupcardshows.com/", websiteLabel: "🌐 anchorupcardshows.com",
+      organizer: "Anchor Up Card Shows",
+      tbd: false,
+    },
+    {
+      id: "evt-025",
+      name: "Emerald Coast Collectors Showcase",
+      startDate: "2026-11-28", endDate: "2026-11-28",
+      dateDisplay: "Saturday, November 28th, 2026",
+      time: "9:30AM to 4:30PM",
+      timeUnknown: false,
+      location: "VFW Post 706, 5000 Lillian Hwy, Pensacola, FL 32506",
+      lat: 30.6177, lng: -88.1789,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "",
+      websiteUrl: "https://www.facebook.com/photo/?fbid=36162817626665257&set=a.183116718395470", websiteLabel: "📅 Facebook",
+      organizer: "Emerald Coast Collectors Showcase",
+      tbd: false,
+    },
+    {
+      id: "evt-026",
+      name: "The 850 Card Show",
+      startDate: "2026-12-12", endDate: "2026-12-12",
+      dateDisplay: "Saturday, December 12th, 2026",
+      time: "3:00PM–8:00PM Fri · 9:00AM–3:00PM Sat",
+      timeUnknown: false,
+      location: "Bay County Fairgrounds, 2230 East 15th St, Panama City, FL",
+      lat: 30.1744469, lng: -85.634126,
+      entryFee: "$3", entryFree: false,
+      vendorFee: "",
+      websiteUrl: "https://850sportscards.net/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQPOTM2NjE5NzQzMzkyNDU5AAGndMvEYRgV2KOU9n15UXLJeNfx_UlkfRzeq3emRCdD0H303c0-W5KtMlEIBgk_aem_WLkN6f9w0KA3SRIt25QAqg", websiteLabel: "📘 Facebook",
+      organizer: "850 Sports Cards",
+      tbd: false,
+    },
+    {
+      id: "evt-027",
+      name: "Mid-South Collectible Toy Show",
+      startDate: "2026-12-19", endDate: "2026-12-19",
+      dateDisplay: "Saturday, December 19th, 2026",
+      time: "9:00AM to 2:30PM",
+      timeUnknown: false,
+      location: "5868 Stage Rd, Bartlett, TN 38134",
+      lat: 30.396, lng: -88.8853,
+      entryFee: "$0", entryFree: true,
+      vendorFee: "",
+      websiteUrl: "https://www.facebook.com/p/The-Mid-South-Collectible-Toy-Show-61584028915878/", websiteLabel: "📘 Facebook",
+      organizer: "Mid-South Collectible Toy Show",
+      tbd: false,
+    }
+  ];
+  /* ==EVENTS-DATA-END== */
+
+  // ===== Constants =====
   const STATE_NAMES = {
     FL:'Florida', AL:'Alabama', MS:'Mississippi', TN:'Tennessee',
     GA:'Georgia', LA:'Louisiana', TX:'Texas'
   };
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function pad(n) { return String(n).padStart(2, '0'); }
+
   function detectState(loc) {
     if (!loc) return 'UNK';
     const m = loc.match(/,\s*([A-Z]{2})(?:\s+\d{5})?\b/);
@@ -1079,39 +997,25 @@
     return 'UNK';
   }
 
-  // ===== Date parsing for Google Calendar =====
-  const MONTHS = { january:0,february:1,march:2,april:3,may:4,june:5,july:6,august:7,september:8,october:9,november:10,december:11 };
-  function parseShowDate(dateStr) {
-    if (!dateStr) return null;
-    // Try "Month D[–D], YYYY" or "Month D-D, YYYY"
-    const yearMatch = dateStr.match(/(\d{4})/);
-    if (!yearMatch) return null;
-    const year = parseInt(yearMatch[1], 10);
-    const monthMatch = dateStr.toLowerCase().match(/(january|february|march|april|may|june|july|august|september|october|november|december)/);
-    if (!monthMatch) return null;
-    const month = MONTHS[monthMatch[1]];
-    const dayMatches = dateStr.match(/\b(\d{1,2})\b/g);
-    if (!dayMatches || dayMatches.length === 0) return null;
-    // First number is the start day; if there are 3 numbers, the second is end day; the last is the year
-    const days = dayMatches.map(n => parseInt(n,10)).filter(n => n >= 1 && n <= 31);
-    const startDay = days[0];
-    const endDay = days.length >= 2 ? days[1] : startDay;
-    return { year, month, startDay, endDay };
+  // ===== Date helpers (events store startDate/endDate as "YYYY-MM-DD") =====
+  function parseIsoDate(iso) {
+    if (!iso) return null;
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+    if (!m) return null;
+    const d = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10));
+    return isNaN(d.getTime()) ? null : d;
   }
-  function pad(n) { return String(n).padStart(2,'0'); }
-  function googleCalUrl(show) {
-    const parsed = parseShowDate(show.date);
-    if (!parsed) return null;
-    const start = `${parsed.year}${pad(parsed.month+1)}${pad(parsed.startDay)}`;
-    // All-day events: end date is exclusive — add one day
-    const endDate = new Date(parsed.year, parsed.month, parsed.endDay + 1);
-    const end = `${endDate.getFullYear()}${pad(endDate.getMonth()+1)}${pad(endDate.getDate())}`;
+  function eventStartDate(ev) { return parseIsoDate(ev.startDate) || parseIsoDate(ev.endDate); }
+  function eventEndDate(ev) { return parseIsoDate(ev.endDate) || parseIsoDate(ev.startDate); }
+  function googleCalUrl(ev) {
+    const start = eventStartDate(ev), end = eventEndDate(ev);
+    if (!start || !end) return null;
+    const s = `${start.getFullYear()}${pad(start.getMonth() + 1)}${pad(start.getDate())}`;
+    const endEx = new Date(end.getFullYear(), end.getMonth(), end.getDate() + 1);
+    const e = `${endEx.getFullYear()}${pad(endEx.getMonth() + 1)}${pad(endEx.getDate())}`;
     const params = new URLSearchParams({
-      action: 'TEMPLATE',
-      text: show.name,
-      dates: `${start}/${end}`,
-      location: show.loc || '',
-      details: `Card show details: https://gulfcoastcardshows.com\n\n${show.name}\n${show.date}\n${show.loc || ''}`
+      action: 'TEMPLATE', text: ev.name, dates: `${s}/${e}`, location: ev.location || '',
+      details: `Card show details: https://gulfcoastcardshows.com\n\n${ev.name}\n${ev.dateDisplay}\n${ev.location || ''}`
     });
     return `https://calendar.google.com/calendar/render?${params.toString()}`;
   }
@@ -1121,64 +1025,214 @@
     const toRad = d => d * Math.PI / 180;
     const R = 3958.8;
     const dLat = toRad(lat2 - lat1), dLng = toRad(lng2 - lng1);
-    const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLng/2)**2;
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
     return 2 * R * Math.asin(Math.sqrt(a));
   }
 
-  // ===== Decorate each card =====
-  function decorateCards() {
-    if (typeof shows === 'undefined') return;
-    const cards = document.querySelectorAll('#shows-grid .show-card');
-    cards.forEach((card, i) => {
-      const numEl = card.querySelector('.show-num');
-      let idx = i;
-      if (numEl) {
-        const m = numEl.textContent.match(/(\d+)/);
-        if (m) idx = parseInt(m[1], 10) - 1;
-      }
-      const show = shows[idx];
-      if (!show) return;
+  // ===== Card rendering =====
+  function fieldGroup(label, value, cls, fullWidth) {
+    return `<div class="field-group"${fullWidth ? ' style="grid-column:1/-1"' : ''}><span class="field-label">${label}</span><span class="field-value${cls ? (' ' + cls) : ''}">${value}</span></div>`;
+  }
 
-      // State badge (next to UPCOMING)
-      const header = card.querySelector('.show-card-header');
-      if (header && !header.querySelector('.state-badge')) {
-        const st = detectState(show.loc);
-        const badge = document.createElement('span');
-        badge.className = `state-badge state-${st}`;
-        badge.textContent = `${st === 'UNK' ? '?' : st} · ${STATE_NAMES[st] || 'Unknown'}`;
-        const upcoming = header.querySelector('.upcoming-badge');
-        if (upcoming) upcoming.insertAdjacentElement('afterend', badge);
-      }
+  function cardHTML(ev, idx) {
+    const num = `#${pad(idx + 1)}`;
+    const st = detectState(ev.location);
+    const stName = st === 'UNK' ? 'Unknown' : STATE_NAMES[st];
 
-      // Card actions row (calendar + report)
-      if (!card.querySelector('.card-actions')) {
-        const actions = document.createElement('div');
-        actions.className = 'card-actions';
+    let fields = '';
+    fields += fieldGroup('Event Name', ev.tbd ? 'TBD' : escapeHtml(ev.name), ev.tbd ? 'unknown' : '');
+    fields += fieldGroup('Event Date', escapeHtml(ev.dateDisplay));
+    const showTime = !ev.timeUnknown && ev.time;
+    fields += fieldGroup('Event Time', showTime ? escapeHtml(ev.time) : 'Unknown', showTime ? '' : 'unknown');
+    fields += fieldGroup('Event Location', escapeHtml(ev.location));
+    if (ev.entryFree) {
+      fields += fieldGroup('Entry Fee', `${escapeHtml(ev.entryFee || '$0')} — Free!`, 'free');
+    } else if (ev.entryFee) {
+      fields += fieldGroup('Entry Fee', escapeHtml(ev.entryFee));
+    } else {
+      fields += fieldGroup('Entry Fee', 'Unknown', 'unknown');
+    }
+    fields += ev.vendorFee
+      ? fieldGroup('Vendor Fee', escapeHtml(ev.vendorFee))
+      : fieldGroup('Vendor Fee', 'Unknown', 'unknown');
+    if (ev.websiteUrl) {
+      fields += `<div class="field-group" style="grid-column:1/-1"><span class="field-label">Website</span><span class="field-value"><a class="website-link" href="${escapeHtml(ev.websiteUrl)}" target="_blank" rel="noopener">${ev.websiteLabel ? escapeHtml(ev.websiteLabel) : '🌐 Website'}</a></span></div>`;
+    }
+    fields += fieldGroup('Organizer', escapeHtml(ev.organizer || 'Unknown'), 'organizer', true);
 
-        const calUrl = googleCalUrl(show);
-        if (calUrl) {
-          const a = document.createElement('a');
-          a.className = 'card-action-btn calendar';
-          a.href = calUrl;
-          a.target = '_blank';
-          a.rel = 'noopener';
-          a.innerHTML = '📅 Add to Google Calendar';
-          actions.appendChild(a);
-        }
+    const calUrl = googleCalUrl(ev);
+    let actions = '<div class="card-actions">';
+    if (calUrl) actions += `<a class="card-action-btn calendar" href="${calUrl}" target="_blank" rel="noopener">📅 Add to Calendar</a>`;
+    actions += `<a class="card-action-btn report" href="#" onclick="openReport('${escapeHtml(ev.name)} ${num}'); return false;">🚩 Report</a>`;
+    actions += '</div>';
 
+    const sortTs = (eventStartDate(ev) || new Date(0)).getTime();
 
-        card.appendChild(actions);
-      }
+    return `<div class="show-card${ev.tbd ? ' tbd' : ''}" data-lat="${ev.lat}" data-lng="${ev.lng}" data-default-order="${idx}" data-sort-date="${sortTs}">
+      <div class="show-card-header">
+        <span class="upcoming-badge">Upcoming</span>
+        <span class="state-badge state-${st}">${st === 'UNK' ? '?' : st} · ${stName}</span>
+        <span class="show-num">${num}</span>
+      </div>
+      <h2 class="show-name">${escapeHtml(ev.tbd ? (ev.name || 'Details Coming Soon') : ev.name)}</h2>
+      <div class="show-fields">${fields}</div>
+      ${actions}
+    </div>`;
+  }
 
-      // Cache lat/lng on the card element for sorting
-      card.dataset.lat = show.lat;
-      card.dataset.lng = show.lng;
-      card.dataset.defaultOrder = idx;
+  function renderShows() {
+    const grid = document.getElementById('shows-grid');
+    grid.innerHTML = EVENTS.length
+      ? EVENTS.map((ev, idx) => cardHTML(ev, idx)).join('')
+      : '<p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 0;">No shows listed yet — add one with the admin panel to get started!</p>';
+
+    document.getElementById('count-number').textContent = EVENTS.length;
+    document.getElementById('map-count-label').textContent =
+      `📍 ${EVENTS.length} Show${EVENTS.length === 1 ? '' : 's'} Along the Gulf Coast`;
+
+    computeNextShow();
+  }
+
+  function computeNextShow() {
+    const card = document.getElementById('next-show-card');
+    if (!EVENTS.length) {
+      card.innerHTML = `<p class="next-label">Next show</p><p class="next-name">No shows listed yet</p>`;
+      return;
+    }
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const withDates = EVENTS.map((ev, i) => ({ ev, i, start: eventStartDate(ev) })).filter(x => x.start);
+    const upcoming = withDates.filter(x => x.start >= today).sort((a, b) => a.start - b.start || a.i - b.i);
+    const fallback = [...withDates].sort((a, b) => a.start - b.start || a.i - b.i);
+    const pick = upcoming[0] || fallback[0] || { ev: EVENTS[0] };
+    const ev = pick.ev;
+    const st = detectState(ev.location);
+    const stName = st === 'UNK' ? 'Unknown' : STATE_NAMES[st];
+    const timeStr = (!ev.timeUnknown && ev.time) ? ` · ${escapeHtml(ev.time)}` : '';
+
+    card.innerHTML = `
+      <p class="next-label">Next show <span class="state-badge state-${st}" style="margin-left:8px;vertical-align:middle;">${st === 'UNK' ? '?' : st} · ${stName}</span></p>
+      <p class="next-name">${escapeHtml(ev.tbd ? (ev.name || 'Details Coming Soon') : ev.name)}</p>
+      <p class="next-date">${escapeHtml(ev.dateDisplay)}${timeStr}</p>
+      <p class="next-loc">${escapeHtml(ev.location)}</p>
+    `;
+  }
+
+  // ===== Map =====
+  const map = L.map('hero-map', { zoomControl: true, scrollWheelZoom: false, attributionControl: false })
+    .setView([30.42, -87.2], 6);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap &copy; CartoDB',
+    maxZoom: 19
+  }).addTo(map);
+
+  const markerIcon = L.divIcon({
+    html: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.35))">
+      <circle cx="14" cy="14" r="13" fill="white" stroke="#ccc" stroke-width="1"/>
+      <path d="M1 14 Q1 1 14 1 Q27 1 27 14 Z" fill="#E53935"/>
+      <rect x="1" y="13" width="26" height="2.5" fill="#1A1A2E"/>
+      <circle cx="14" cy="14" r="5" fill="white" stroke="#1A1A2E" stroke-width="1.5"/>
+      <circle cx="14" cy="14" r="2.5" fill="#E53935"/>
+    </svg>`,
+    className: '',
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
+    popupAnchor: [0, -16]
+  });
+
+  function renderMapMarkers() {
+    EVENTS.forEach(ev => {
+      if (typeof ev.lat !== 'number' || typeof ev.lng !== 'number') return;
+      L.marker([ev.lat, ev.lng], { icon: markerIcon })
+        .addTo(map)
+        .bindPopup(`
+          <div class="popup-name">${escapeHtml(ev.tbd ? (ev.name || 'Details Coming Soon') : ev.name)}</div>
+          <div class="popup-date">📅 ${escapeHtml(ev.dateDisplay)}</div>
+          <div class="popup-loc">📍 ${escapeHtml(ev.location)}</div>
+        `);
     });
   }
 
+  // ===== Add Your Show modal =====
+  function openModal() { document.getElementById('modal').classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeModal() { document.getElementById('modal').classList.remove('open'); document.body.style.overflow = ''; }
+  function closeModalOutside(e) { if (e.target === document.getElementById('modal')) closeModal(); }
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const form = document.getElementById('show-form');
+    const btn = form.querySelector('.submit-btn');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        btn.textContent = '✅ Submitted!';
+        setTimeout(() => { closeModal(); form.reset(); btn.textContent = 'Submit Show for Review ⚡'; btn.disabled = false; }, 1800);
+      } else {
+        btn.textContent = '❌ Error — try again';
+        btn.disabled = false;
+      }
+    } catch {
+      btn.textContent = '❌ Network error';
+      btn.disabled = false;
+    }
+  }
+
+  // ===== Contact modal =====
+  function openContact() { document.getElementById('contact-modal').classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeContact() { document.getElementById('contact-modal').classList.remove('open'); document.body.style.overflow = ''; }
+  function closeContactOutside(e) { if (e.target === document.getElementById('contact-modal')) closeContact(); }
+
+  // ===== Report modal =====
+  function openReport(prefill) {
+    const m = document.getElementById('report-modal');
+    if (!m) return;
+    if (prefill) {
+      const f = document.getElementById('report-show-name');
+      if (f) f.value = prefill;
+    }
+    m.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeReport() {
+    document.getElementById('report-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function closeReportOutside(e) {
+    if (e.target === document.getElementById('report-modal')) closeReport();
+  }
+  async function handleReportSubmit(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('button[type="submit"]');
+    const original = btn.textContent;
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+    try {
+      const r = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (r.ok) {
+        btn.textContent = '✓ Sent — thanks!';
+        setTimeout(() => { closeReport(); form.reset(); btn.textContent = original; btn.disabled = false; }, 1500);
+      } else {
+        btn.textContent = 'Error — try again';
+        btn.disabled = false;
+      }
+    } catch {
+      btn.textContent = 'Error — try again';
+      btn.disabled = false;
+    }
+  }
+
   // ===== Home base + distance =====
-  let homeBase = null; // { lat, lng, label }
+  let homeBase = null;
   function loadHomeBase() {
     try {
       const raw = localStorage.getItem('gccs-home-base');
@@ -1204,14 +1258,13 @@
     setStatus('Looking up location…');
     try {
       const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&q=${encodeURIComponent(q)}`;
-      const r = await fetch(url, { headers: { 'Accept':'application/json' } });
+      const r = await fetch(url, { headers: { 'Accept': 'application/json' } });
       const data = await r.json();
       if (!data || !data.length) { setStatus('Couldn\'t find that location. Try adding a state or ZIP.', true); return; }
       homeBase = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon), label: q };
       localStorage.setItem('gccs-home-base', JSON.stringify(homeBase));
       setStatus(`📍 Home base: ${homeBase.label}`);
       renderDistances();
-      // Auto-switch to nearest sort
       const sel = document.getElementById('sort-select');
       if (sel && sel.value === 'default') { sel.value = 'distance'; applySort(); }
     } catch (e) {
@@ -1253,11 +1306,13 @@
     const mode = sel.value;
     const cards = Array.from(grid.querySelectorAll('.show-card'));
     if (mode === 'default') {
-      cards.sort((a,b) => (parseInt(a.dataset.defaultOrder)||0) - (parseInt(b.dataset.defaultOrder)||0));
+      cards.sort((a, b) => (parseInt(a.dataset.defaultOrder) || 0) - (parseInt(b.dataset.defaultOrder) || 0));
+    } else if (mode === 'date') {
+      cards.sort((a, b) => (parseInt(a.dataset.sortDate) || 0) - (parseInt(b.dataset.sortDate) || 0));
     } else if (mode === 'distance' || mode === 'distance-far') {
       if (!homeBase) { setStatus('Set a home base first to sort by distance.', true); sel.value = 'default'; return; }
       const dir = mode === 'distance' ? 1 : -1;
-      cards.sort((a,b) => {
+      cards.sort((a, b) => {
         const da = parseFloat(a.dataset.distance); const db = parseFloat(b.dataset.distance);
         if (isNaN(da)) return 1; if (isNaN(db)) return -1;
         return (da - db) * dir;
@@ -1266,60 +1321,27 @@
     cards.forEach(c => grid.appendChild(c));
   }
 
-  // ===== Report modal =====
-  function openReport(prefill) {
-    const m = document.getElementById('report-modal');
-    if (!m) return;
-    if (prefill) {
-      const f = document.getElementById('report-show-name');
-      if (f) f.value = prefill;
-    }
-    m.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeReport() {
-    document.getElementById('report-modal').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-  function closeReportOutside(e) {
-    if (e.target === document.getElementById('report-modal')) closeReport();
-  }
-  async function handleReportSubmit(e) {
-    e.preventDefault();
-    const form = e.target;
-    const btn = form.querySelector('button[type="submit"]');
-    const original = btn.textContent;
-    btn.textContent = 'Sending…';
-    btn.disabled = true;
+  // ===== Last updated timestamp =====
+  (function () {
     try {
-      const r = await fetch(form.action, {
-        method: 'POST',
-        body: new FormData(form),
-        headers: { 'Accept':'application/json' }
-      });
-      if (r.ok) {
-        btn.textContent = '✓ Sent — thanks!';
-        setTimeout(() => { closeReport(); form.reset(); btn.textContent = original; btn.disabled = false; }, 1500);
-      } else {
-        btn.textContent = 'Error — try again';
-        btn.disabled = false;
-      }
-    } catch {
-      btn.textContent = 'Error — try again';
-      btn.disabled = false;
-    }
-  }
+      const el = document.getElementById('last-updated-stamp');
+      if (!el) return;
+      const d = new Date(document.lastModified);
+      const opts = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' };
+      el.textContent = isNaN(d.getTime()) ? '—' : d.toLocaleString(undefined, opts);
+    } catch (e) { /* noop */ }
+  })();
 
   // ===== Init =====
-  function initEnhancements() {
-    try { decorateCards(); } catch (e) { console.error(e); }
-    try { loadHomeBase(); } catch (e) { console.error(e); }
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => setTimeout(initEnhancements, 50));
-  } else {
-    setTimeout(initEnhancements, 50);
-  }
+  renderShows();
+  renderMapMarkers();
+  loadHomeBase();
+
+  document.querySelector('a[href="#shows"]').addEventListener('click', function (e) {
+    e.preventDefault();
+    document.getElementById('shows').scrollIntoView({ behavior: 'smooth' });
+  });
 </script>
+
 </body>
 </html>
