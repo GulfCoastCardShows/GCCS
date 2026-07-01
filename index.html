@@ -292,10 +292,10 @@
   .ctrl-status.error { color:var(--red); }
 
   .distance-pill {
-    display:inline-block; font-family:'Nunito',sans-serif; font-weight:800;
+    display:inline-flex; align-items:center; font-family:'Nunito',sans-serif; font-weight:800;
     font-size:11px; padding:4px 10px; border-radius:50px;
     background:var(--secondary, #E3F2FD); color:var(--blue);
-    border:1px solid var(--blue); margin-top:8px;
+    border:1px solid var(--blue);
   }
   html.dark .distance-pill { background:#071428; }
 
@@ -1719,11 +1719,11 @@
       if (isNaN(lat) || isNaN(lng)) return;
       const miles = haversineMiles(homeBase.lat, homeBase.lng, lat, lng);
       card.dataset.distance = miles;
-      const pill = document.createElement('div');
+      const pill = document.createElement('span');
       pill.className = 'distance-pill';
       pill.textContent = `📍 ${miles.toFixed(0)} mi from ${homeBase.label}`;
-      const header = card.querySelector('.show-card-header');
-      if (header) header.insertAdjacentElement('afterend', pill);
+      const badgeRow = card.querySelector('.header-badges');
+      if (badgeRow) badgeRow.appendChild(pill);
     });
   }
 
