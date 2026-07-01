@@ -644,7 +644,7 @@ ${serializeDetails(ev.details)}
       </div>
 
       <div class="section-divider"><div class="section-label">More Details (popup window)</div></div>
-      <div class="hint" style="margin-bottom:12px;">Fill any of these in and the event card becomes clickable — visitors will see a detailed popup with this info. Leave everything blank to keep the card as-is.</div>
+      <div class="hint" style="margin-bottom:12px;">Fill any of these in and the popup on the public site will show it — About, At a Glance, What to Expect, and Location Notes each only appear if you've entered something. Every event card is clickable, so it's fine to leave all of this blank too.
       <div class="form-group">
         <label>About This Show</label>
         <textarea id="f-about" rows="4" placeholder="A paragraph describing the show — vibe, size, what makes it worth attending.">${escapeHtml((ev.details && ev.details.about) || '')}</textarea>
