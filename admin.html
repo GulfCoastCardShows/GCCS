@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gulf Coast Card Shows — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F0E8; --card-bg: #FFFFFF; --nav-bg: #FDFAF4;
+    --red: #E53935; --yellow: #FFD600; --blue: #1565C0; --dark: #1A1A2E;
+    --muted: #6B7280; --border: #E5E0D5; --radius: 14px;
+    --shadow: 0 2px 16px rgba(0,0,0,0.07); --green: #2E7D32;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); min-height: 100vh; }
+
+  header {
+    background: var(--nav-bg); border-bottom: 1px solid var(--border);
+    padding: 14px 24px; display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap; position: sticky; top: 0; z-index: 50;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--red); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .brand-title { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 16px; }
+  .brand-sub { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  button, .btn {
+    font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px;
+    padding: 9px 16px; border-radius: 10px; border: 2px solid var(--border);
+    background: var(--card-bg); color: var(--dark); cursor: pointer; transition: all 0.15s;
+  }
+  button:hover { background: var(--border); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-primary { background: var(--red); border-color: var(--red); color: #fff; }
+  .btn-primary:hover { opacity: 0.9; background: var(--red); }
+  .btn-dark { background: var(--dark); border-color: var(--dark); color: #fff; }
+  .btn-dark:hover { opacity: 0.85; background: var(--dark); }
+  .btn-sm { padding: 6px 10px; font-size: 12px; }
+  .btn-icon { padding: 6px 9px; font-size: 13px; line-height: 1; }
+  .btn-danger { color: var(--red); border-color: var(--red); background: #FFF0F0; }
+
+  #file-status { font-size: 12px; color: var(--muted); max-width: 320px; }
+  #file-status.error { color: var(--red); font-weight: 700; }
+  #file-status.ok { color: var(--green); font-weight: 700; }
+
+  .layout { display: grid; grid-template-columns: 400px 1fr; gap: 20px; padding: 20px 24px; max-width: 1400px; margin: 0 auto; align-items: start; }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+  .panel { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .panel-header { padding: 16px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .panel-title { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 15px; }
+  .panel-body { padding: 14px 16px; }
+
+  .empty-state { text-align: center; padding: 60px 24px; color: var(--muted); }
+  .empty-state-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; margin-bottom: 16px; line-height: 1.6; }
+
+  /* Event list */
+  .event-row {
+    display: flex; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid var(--border);
+    border-radius: 10px; margin-bottom: 8px; background: var(--bg);
+  }
+  .event-row.tbd { border-style: dashed; opacity: 0.85; }
+  .event-row.selected { border-color: var(--blue); background: #EEF5FF; }
+  .event-order { display: flex; flex-direction: column; gap: 2px; }
+  .event-order button { padding: 2px 6px; font-size: 10px; border-radius: 6px; }
+  .event-num { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 11px; color: var(--muted); min-width: 26px; padding-top: 2px; }
+  .event-main { flex: 1; min-width: 0; cursor: pointer; }
+  .event-name { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .event-meta { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .event-tag { display: inline-block; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 9px; padding: 2px 7px; border-radius: 50px; background: var(--dark); color: #fff; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+  .event-actions { display: flex; flex-direction: column; gap: 4px; }
+
+  /* Form */
+  .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  label { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  input[type=text], input[type=date], input[type=url], input[type=email], select, textarea {
+    font-family: 'Inter', sans-serif; font-size: 14px; padding: 9px 12px; border: 2px solid var(--border);
+    border-radius: 9px; background: var(--bg); color: var(--dark); outline: none; width: 100%;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--blue); }
+  .radio-group { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .radio-option { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; }
+  .radio-option input { width: auto; }
+  .checkbox-row { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; margin-bottom: 14px; }
+  .checkbox-row input { width: auto; }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+  .section-divider { border-top: 1px dashed var(--border); margin: 18px 0; padding-top: 4px; }
+  .section-label { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 10px; }
+  .geo-row { display: flex; gap: 10px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+  .geo-result { font-size: 12px; font-weight: 700; }
+  .geo-result.ok { color: var(--green); }
+  .geo-result.pending { color: var(--muted); }
+  .geo-result.err { color: var(--red); }
+  .form-actions { display: flex; gap: 10px; padding-top: 6px; }
+  .field-error { border-color: var(--red) !important; }
+  .field-error-msg { font-size: 12px; color: var(--red); margin-top: 3px; }
+
+  .toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: var(--dark); color: #fff; font-family: 'Nunito', sans-serif; font-weight: 700;
+    font-size: 13px; padding: 12px 20px; border-radius: 50px; box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+    z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+  .toast.err { background: var(--red); }
+
+  .browser-note {
+    max-width: 1400px; margin: 0 auto; padding: 10px 24px 0; font-size: 12px; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-icon">🎴</div>
+    <div>
+      <div class="brand-title">Show Admin</div>
+      <div class="brand-sub">Gulf Coast Card Shows</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <span id="file-status">No file open — click "Open index.html" to start.</span>
+    <button id="btn-open" class="btn-dark">📂 Open index.html</button>
+    <input type="file" id="file-input-fallback" accept=".html,.htm" style="display:none;">
+    <button id="btn-save" class="btn-primary" disabled>💾 Save to index.html</button>
+    <button id="btn-download" disabled>⬇️ Download copy</button>
+  </div>
+</header>
+<p class="browser-note" id="browser-note"></p>
+
+<div class="layout">
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">Shows (<span id="event-count">0</span>)</span>
+      <button id="btn-add" class="btn-sm btn-primary" disabled>+ Add Show</button>
+    </div>
+    <div class="panel-body" id="event-list-body">
+      <div class="empty-state">
+        <div class="empty-state-icon">🗂️</div>
+        <p>Open your site's <strong>index.html</strong> file to load and manage its shows here.</p>
+        <button id="btn-open-2" class="btn-dark">📂 Open index.html</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="form-panel">
+    <div class="panel-header">
+      <span class="panel-title" id="form-title">No show selected</span>
+    </div>
+    <div class="panel-body" id="form-body">
+      <div class="empty-state">
+        <div class="empty-state-icon">👈</div>
+        <p>Select a show on the left to edit it, or add a new one.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const STORAGE_UNSUPPORTED_NOTE = `This browser doesn't support saving files in place (that needs Chrome or Edge). You can still open, edit, and then use "Download copy" to get an updated index.html — just replace your old file with the downloaded one.`;
+
+  let fileHandle = null;
+  let originalText = '';
+  let events = [];
+  let selectedId = null;
+  let dirty = false;
+
+  const supportsFSAccess = 'showOpenFilePicker' in window;
+  if (!supportsFSAccess) {
+    document.getElementById('browser-note').textContent = STORAGE_UNSUPPORTED_NOTE;
+  }
+
+  // ===== Toast =====
+  let toastTimer = null;
+  function toast(msg, isErr) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.toggle('err', !!isErr);
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
+  }
+  function setFileStatus(msg, cls) {
+    const el = document.getElementById('file-status');
+    el.textContent = msg;
+    el.className = cls || '';
+  }
+
+  // ===== Parsing / serializing EVENTS in the HTML file =====
+  const START_MARKER = '/* ==EVENTS-DATA-START== */';
+  const END_MARKER = '/* ==EVENTS-DATA-END== */';
+
+  function parseEventsFromHtml(text) {
+    const s = text.indexOf(START_MARKER), e = text.indexOf(END_MARKER);
+    if (s === -1 || e === -1) {
+      throw new Error('Could not find the EVENTS data markers in this file. Make sure you selected the index.html from this site.');
+    }
+    const block = text.slice(s + START_MARKER.length, e);
+    const m = block.match(/const\s+EVENTS\s*=\s*(\[[\s\S]*\]);/);
+    if (!m) throw new Error('Found the markers but could not parse the EVENTS array inside them.');
+    let parsed;
+    try {
+      parsed = new Function('return (' + m[1] + ')')();
+    } catch (err) {
+      throw new Error('The EVENTS array in this file has a syntax error: ' + err.message);
+    }
+    return parsed.map((ev, i) => normalizeEvent(ev, i));
+  }
+
+  function normalizeEvent(ev, i) {
+    const d = ev.details || {};
+    return {
+      id: ev.id || ('evt-' + String(i + 1).padStart(3, '0')),
+      name: ev.name || '',
+      dateDisplay: ev.dateDisplay || '',
+      startDate: ev.startDate || '',
+      endDate: ev.endDate || '',
+      time: ev.time || '',
+      timeUnknown: !!ev.timeUnknown,
+      location: ev.location || '',
+      lat: typeof ev.lat === 'number' ? ev.lat : null,
+      lng: typeof ev.lng === 'number' ? ev.lng : null,
+      entryFee: ev.entryFee || '',
+      entryFree: !!ev.entryFree,
+      vendorFee: ev.vendorFee || '',
+      websiteUrl: ev.websiteUrl || '',
+      websiteLabel: ev.websiteLabel || '',
+      organizer: ev.organizer || '',
+      tbd: !!ev.tbd,
+      authServices: (ev.authServices && typeof ev.authServices === 'object')
+        ? {
+            present: ev.authServices.present === true ? true
+                    : ev.authServices.present === false ? false
+                    : null,
+            company: ev.authServices.company || '',
+          }
+        : { present: null, company: '' },
+      details: {
+        about: d.about || '',
+        atAGlance: Array.isArray(d.atAGlance)
+          ? d.atAGlance.filter(x => x && (x.label || x.value)).map(x => ({ label: x.label || '', value: x.value || '' }))
+          : [],
+        whatToExpect: Array.isArray(d.whatToExpect) ? d.whatToExpect.filter(Boolean) : [],
+        locationNotes: d.locationNotes || '',
+      },
+    };
+  }
+
+  function jsStringEscape(s) {
+    return String(s == null ? '' : s).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
+  }
+
+  function serializeDetails(d) {
+    d = d || {};
+    const hasAbout = d.about && d.about.trim();
+    const glance = Array.isArray(d.atAGlance) ? d.atAGlance : [];
+    const expect = Array.isArray(d.whatToExpect) ? d.whatToExpect : [];
+    const hasNotes = d.locationNotes && d.locationNotes.trim();
+    if (!hasAbout && !glance.length && !expect.length && !hasNotes) {
+      return '      details: { about: "", atAGlance: [], whatToExpect: [], locationNotes: "" },';
+    }
+    const glanceStr = glance.length
+      ? '[' + glance.map(c => `{label:"${jsStringEscape(c.label)}",value:"${jsStringEscape(c.value)}"}`).join(', ') + ']'
+      : '[]';
+    const expectStr = expect.length
+      ? '[' + expect.map(x => `"${jsStringEscape(x)}"`).join(', ') + ']'
+      : '[]';
+    return `      details: {
+        about: "${jsStringEscape(d.about || '')}",
+        atAGlance: ${glanceStr},
+        whatToExpect: ${expectStr},
+        locationNotes: "${jsStringEscape(d.locationNotes || '')}",
+      },`;
+  }
+
+  function serializeEvents(list) {
+    return list.map(ev => `    {
+      id: "${jsStringEscape(ev.id)}",
+      name: "${jsStringEscape(ev.name)}",
+      startDate: "${jsStringEscape(ev.startDate)}", endDate: "${jsStringEscape(ev.endDate)}",
+      dateDisplay: "${jsStringEscape(ev.dateDisplay)}",
+      time: "${jsStringEscape(ev.time)}",
+      timeUnknown: ${!!ev.timeUnknown},
+      location: "${jsStringEscape(ev.location)}",
+      lat: ${Number.isFinite(ev.lat) ? ev.lat : 'null'}, lng: ${Number.isFinite(ev.lng) ? ev.lng : 'null'},
+      entryFee: "${jsStringEscape(ev.entryFee)}", entryFree: ${!!ev.entryFree},
+      vendorFee: "${jsStringEscape(ev.vendorFee)}",
+      websiteUrl: "${jsStringEscape(ev.websiteUrl)}", websiteLabel: "${jsStringEscape(ev.websiteLabel)}",
+      organizer: "${jsStringEscape(ev.organizer)}",
+      tbd: ${!!ev.tbd},
+      authServices: { present: ${ev.authServices && ev.authServices.present === true ? 'true' : ev.authServices && ev.authServices.present === false ? 'false' : 'null'}, company: "${jsStringEscape(ev.authServices ? ev.authServices.company : '')}" },
+${serializeDetails(ev.details)}
+    }`).join(',\n');
+  }
+
+  function writeEventsIntoHtml(text, list) {
+    const s = text.indexOf(START_MARKER), e = text.indexOf(END_MARKER);
+    if (s === -1 || e === -1) throw new Error('EVENTS markers not found — cannot save.');
+    const before = text.slice(0, s + START_MARKER.length);
+    const after = text.slice(e);
+    const body = list.length ? `\n  const EVENTS = [\n${serializeEvents(list)}\n  ];\n  ` : `\n  const EVENTS = [];\n  `;
+    return before + body + after;
+  }
+
+  // ===== Open / Save =====
+  async function openFile() {
+    if (supportsFSAccess) {
+      try {
+        const [handle] = await window.showOpenFilePicker({
+          types: [{ description: 'HTML files', accept: { 'text/html': ['.html', '.htm'] } }]
+        });
+        const file = await handle.getFile();
+        const text = await file.text();
+        const parsed = parseEventsFromHtml(text);
+        fileHandle = handle;
+        originalText = text;
+        events = parsed;
+        selectedId = null;
+        dirty = false;
+        afterLoad(file.name);
+      } catch (err) {
+        if (err.name !== 'AbortError') { toast(err.message, true); }
+      }
+    } else {
+      document.getElementById('file-input-fallback').click();
+    }
+  }
+
+  document.getElementById('file-input-fallback').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const parsed = parseEventsFromHtml(text);
+      fileHandle = null;
+      originalText = text;
+      events = parsed;
+      selectedId = null;
+      dirty = false;
+      afterLoad(file.name);
+    } catch (err) {
+      toast(err.message, true);
+    }
+    e.target.value = '';
+  });
+
+  function afterLoad(name) {
+    setFileStatus(`Opened ${name} — ${events.length} show${events.length === 1 ? '' : 's'} loaded.`, 'ok');
+    document.getElementById('btn-save').disabled = false;
+    document.getElementById('btn-download').disabled = false;
+    document.getElementById('btn-add').disabled = false;
+    renderList();
+    renderForm(null);
+    toast(`Loaded ${events.length} shows`);
+  }
+
+  async function saveFile() {
+    if (!originalText) { toast('Open index.html first.', true); return; }
+    let newText;
+    try {
+      newText = writeEventsIntoHtml(originalText, events);
+    } catch (err) { toast(err.message, true); return; }
+
+    if (fileHandle) {
+      try {
+        const writable = await fileHandle.createWritable();
+        await writable.write(newText);
+        await writable.close();
+        originalText = newText;
+        dirty = false;
+        setFileStatus(`Saved ✓ — ${events.length} shows written to index.html`, 'ok');
+        toast('Saved to index.html');
+      } catch (err) {
+        toast('Save failed: ' + err.message, true);
+      }
+    } else {
+      downloadFile(newText);
+    }
+  }
+
+  function downloadFile(text) {
+    const blob = new Blob([text], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'index.html';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    originalText = text;
+    dirty = false;
+    setFileStatus(`Downloaded index.html (${events.length} shows) — replace your old file with this one.`, 'ok');
+    toast('Downloaded updated index.html');
+  }
+
+  document.getElementById('btn-open').addEventListener('click', openFile);
+  document.getElementById('btn-open-2').addEventListener('click', openFile);
+  document.getElementById('btn-save').addEventListener('click', saveFile);
+  document.getElementById('btn-download').addEventListener('click', () => {
+    if (!originalText) { toast('Open index.html first.', true); return; }
+    try { downloadFile(writeEventsIntoHtml(originalText, events)); }
+    catch (err) { toast(err.message, true); }
+  });
+
+  window.addEventListener('beforeunload', (e) => {
+    if (dirty) { e.preventDefault(); e.returnValue = ''; }
+  });
+
+  // ===== Date helpers =====
+  const DOW = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function ordinal(n) {
+    const s = ['th','st','nd','rd'], v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+  function formatDateDisplay(startISO, endISO) {
+    if (!startISO) return '';
+    const start = new Date(startISO + 'T00:00:00');
+    if (isNaN(start.getTime())) return '';
+    const sStr = `${DOW[start.getDay()]}, ${MONTH_NAMES[start.getMonth()]} ${ordinal(start.getDate())}`;
+    if (endISO && endISO !== startISO) {
+      const end = new Date(endISO + 'T00:00:00');
+      if (!isNaN(end.getTime())) {
+        const eStr = `${DOW[end.getDay()]}, ${MONTH_NAMES[end.getMonth()]} ${ordinal(end.getDate())}`;
+        return `${sStr} & ${eStr}, ${end.getFullYear()}`;
+      }
+    }
+    return `${sStr}, ${start.getFullYear()}`;
+  }
+
+  function autoWebsiteLabel(url) {
+    if (!url) return '';
+    let host = '';
+    try { host = new URL(url).hostname.replace(/^www\./, ''); } catch { return '🌐 Website'; }
+    if (host.includes('instagram.com')) return '📸 Instagram';
+    if (host.includes('facebook.com')) return url.includes('/events/') ? '📅 Facebook Event' : '📘 Facebook';
+    return `🌐 ${host}`;
+  }
+
+  const STATE_NAMES = { FL:'Florida', AL:'Alabama', MS:'Mississippi', TN:'Tennessee', GA:'Georgia', LA:'Louisiana', TX:'Texas' };
+  function detectState(loc) {
+    if (!loc) return 'UNK';
+    const m = loc.match(/,\s*([A-Z]{2})(?:\s+\d{5})?\b/);
+    if (m && STATE_NAMES[m[1]]) return m[1];
+    for (const k of Object.keys(STATE_NAMES)) {
+      if (new RegExp('\\b' + STATE_NAMES[k] + '\\b', 'i').test(loc)) return k;
+    }
+    return 'UNK';
+  }
+
+  // ===== List rendering =====
+  function renderList() {
+    document.getElementById('event-count').textContent = events.length;
+    const body = document.getElementById('event-list-body');
+    if (!events.length) {
+      body.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🎴</div><p>No shows yet. Click "+ Add Show" to create the first one.</p></div>`;
+      return;
+    }
+    body.innerHTML = events.map((ev, i) => {
+      const st = detectState(ev.location);
+      return `
+      <div class="event-row${ev.tbd ? ' tbd' : ''}${ev.id === selectedId ? ' selected' : ''}" data-id="${ev.id}">
+        <div class="event-order">
+          <button class="btn-icon" data-action="up" data-id="${ev.id}" ${i === 0 ? 'disabled' : ''} title="Move up">↑</button>
+          <button class="btn-icon" data-action="down" data-id="${ev.id}" ${i === events.length - 1 ? 'disabled' : ''} title="Move down">↓</button>
+        </div>
+        <div class="event-num">#${String(i + 1).padStart(2, '0')}</div>
+        <div class="event-main" data-action="edit" data-id="${ev.id}">
+          <div class="event-name">${escapeHtml(ev.tbd ? (ev.name || 'Details Coming Soon') : (ev.name || '(unnamed show)'))}</div>
+          <div class="event-meta">${escapeHtml(ev.dateDisplay || 'No date set')} · ${st === 'UNK' ? '' : st}</div>
+          ${ev.tbd ? '<span class="event-tag">TBD</span>' : ''}
+        </div>
+        <div class="event-actions">
+          <button class="btn-icon" data-action="edit" data-id="${ev.id}" title="Edit">✏️</button>
+          <button class="btn-icon btn-danger" data-action="delete" data-id="${ev.id}" title="Delete">🗑️</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('event-list-body').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const id = btn.dataset.id;
+    const action = btn.dataset.action;
+    const idx = events.findIndex(ev => ev.id === id);
+    if (idx === -1) return;
+    if (action === 'edit') { selectedId = id; renderList(); renderForm(id); }
+    else if (action === 'delete') {
+      if (confirm(`Delete "${events[idx].name || 'this show'}"? This can't be undone here (but you haven't saved yet).`)) {
+        events.splice(idx, 1);
+        dirty = true;
+        if (selectedId === id) { selectedId = null; renderForm(null); }
+        renderList();
+      }
+    } else if (action === 'up' && idx > 0) {
+      [events[idx - 1], events[idx]] = [events[idx], events[idx - 1]];
+      dirty = true; renderList();
+    } else if (action === 'down' && idx < events.length - 1) {
+      [events[idx + 1], events[idx]] = [events[idx], events[idx + 1]];
+      dirty = true; renderList();
+    }
+  });
+
+  document.getElementById('btn-add').addEventListener('click', () => {
+    selectedId = '__new__';
+    renderList();
+    renderForm('__new__');
+  });
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ===== Form rendering =====
+  function blankEvent() {
+    return {
+      id: 'evt-' + Date.now(), name: '', dateDisplay: '', startDate: '', endDate: '',
+      time: '', timeUnknown: false, location: '', lat: null, lng: null,
+      entryFee: '', entryFree: true, vendorFee: '', websiteUrl: '', websiteLabel: '',
+      organizer: '', tbd: false,
+      authServices: { present: null, company: '' },
+      details: { about: '', atAGlance: [], whatToExpect: [], locationNotes: '' },
+    };
+  }
+
+  // Convert atAGlance array to textarea lines ("Label: Value")
+  function glanceToText(arr) {
+    if (!Array.isArray(arr)) return '';
+    return arr.map(c => `${c.label || ''}: ${c.value || ''}`).join('\n');
+  }
+  // Parse textarea ("Label: Value" per line) back to array
+  function textToGlance(text) {
+    if (!text) return [];
+    return text.split(/\r?\n/).map(line => {
+      const trimmed = line.trim();
+      if (!trimmed) return null;
+      const idx = trimmed.indexOf(':');
+      if (idx === -1) return { label: trimmed, value: '' };
+      return { label: trimmed.slice(0, idx).trim(), value: trimmed.slice(idx + 1).trim() };
+    }).filter(x => x && (x.label || x.value));
+  }
+  // Convert bullet lines: strip leading "- " or "* "
+  function textToBullets(text) {
+    if (!text) return [];
+    return text.split(/\r?\n/).map(l => l.replace(/^\s*[-*•]\s*/, '').trim()).filter(Boolean);
+  }
+
+  function renderForm(id) {
+    const panelTitle = document.getElementById('form-title');
+    const body = document.getElementById('form-body');
+    if (!id) {
+      panelTitle.textContent = 'No show selected';
+      body.innerHTML = `<div class="empty-state"><div class="empty-state-icon">👈</div><p>Select a show on the left to edit it, or add a new one.</p></div>`;
+      return;
+    }
+    const isNew = id === '__new__';
+    const ev = isNew ? blankEvent() : events.find(e => e.id === id);
+    if (!ev) { renderForm(null); return; }
+
+    panelTitle.textContent = isNew ? 'Add a new show' : `Editing: ${ev.name || '(unnamed show)'}`;
+
+    const entryMode = ev.entryFree ? 'free' : (ev.entryFee ? 'amount' : 'unknown');
+    const vendorMode = ev.vendorFee ? 'amount' : 'unknown';
+
+    body.innerHTML = `
+      <div class="form-group">
+        <label>Event Name ${ev.tbd ? '<span style="text-transform:none;font-weight:400;">(shown as "TBD" on the card while details are pending)</span>' : '*'}</label>
+        <input type="text" id="f-name" value="${escapeHtml(ev.name)}" placeholder="e.g. Gulf Coast Card Swap">
+      </div>
+      <label class="checkbox-row"><input type="checkbox" id="f-tbd" ${ev.tbd ? 'checked' : ''}> Details still TBD (shows a dashed "coming soon" card)</label>
+
+      <div class="section-divider"><div class="section-label">When</div></div>
+      <div class="form-row">
+        <div class="form-group"><label>Start Date *</label><input type="date" id="f-start-date" value="${escapeHtml(ev.startDate)}"></div>
+        <div class="form-group"><label>End Date (if multi-day)</label><input type="date" id="f-end-date" value="${escapeHtml(ev.endDate)}"></div>
+      </div>
+      <div class="hint" id="date-preview">Date display will be generated automatically.</div>
+      <div class="form-group" style="margin-top:12px;">
+        <label>Time</label>
+        <input type="text" id="f-time" value="${escapeHtml(ev.time)}" placeholder="e.g. 9:00AM to 3:00PM" ${ev.timeUnknown ? 'disabled' : ''}>
+      </div>
+      <label class="checkbox-row"><input type="checkbox" id="f-time-unknown" ${ev.timeUnknown ? 'checked' : ''}> Time not known yet</label>
+
+      <div class="section-divider"><div class="section-label">Where</div></div>
+      <div class="form-group">
+        <label>Venue &amp; Address *</label>
+        <input type="text" id="f-location" value="${escapeHtml(ev.location)}" placeholder="Venue name, street, city, state, ZIP">
+      </div>
+      <div class="geo-row">
+        <button type="button" id="f-geocode" class="btn-sm">📍 Find coordinates</button>
+        <span class="geo-result ${ev.lat != null ? 'ok' : 'pending'}" id="geo-result">${ev.lat != null ? `Set: ${ev.lat.toFixed(4)}, ${ev.lng.toFixed(4)}` : 'Not set yet — click "Find coordinates" after entering the address'}</span>
+      </div>
+      <div class="hint">Needed to place this show on the map and to power distance sorting. Uses OpenStreetMap — free, no API key.</div>
+
+      <div class="section-divider"><div class="section-label">Fees</div></div>
+      <div class="form-group">
+        <label>Entry Fee</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="f-entry-mode" value="free" ${entryMode === 'free' ? 'checked' : ''}> Free</label>
+          <label class="radio-option"><input type="radio" name="f-entry-mode" value="amount" ${entryMode === 'amount' ? 'checked' : ''}> Amount</label>
+          <label class="radio-option"><input type="radio" name="f-entry-mode" value="unknown" ${entryMode === 'unknown' ? 'checked' : ''}> Unknown</label>
+        </div>
+        <input type="text" id="f-entry-amount" value="${escapeHtml(entryMode === 'amount' ? ev.entryFee : '')}" placeholder="e.g. $5 or $2-5" style="margin-top:8px;" ${entryMode !== 'amount' ? 'disabled' : ''}>
+      </div>
+      <div class="form-group">
+        <label>Vendor / Table Fee</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="f-vendor-mode" value="amount" ${vendorMode === 'amount' ? 'checked' : ''}> Amount</label>
+          <label class="radio-option"><input type="radio" name="f-vendor-mode" value="unknown" ${vendorMode === 'unknown' ? 'checked' : ''}> Unknown</label>
+        </div>
+        <input type="text" id="f-vendor-amount" value="${escapeHtml(ev.vendorFee)}" placeholder="e.g. $50 or $65-100" style="margin-top:8px;" ${vendorMode !== 'amount' ? 'disabled' : ''}>
+      </div>
+
+      <div class="section-divider"><div class="section-label">Details</div></div>
+      <div class="form-group">
+        <label>Website / Social Link</label>
+        <input type="url" id="f-website-url" value="${escapeHtml(ev.websiteUrl)}" placeholder="https://...">
+      </div>
+      <div class="form-group">
+        <label>Link Label</label>
+        <input type="text" id="f-website-label" value="${escapeHtml(ev.websiteLabel)}" placeholder="Auto-filled from the URL — edit if you like">
+      </div>
+      <div class="form-group">
+        <label>Organizer</label>
+        <input type="text" id="f-organizer" value="${escapeHtml(ev.organizer)}" placeholder="Name or business running the show">
+      </div>
+
+      <div class="section-divider"><div class="section-label">Authentication Services</div></div>
+      <div class="hint" style="margin-bottom:10px;">Will grading / authentication services (PSA, Beckett, CGC, etc.) be on-site at this show?</div>
+      <div class="form-group">
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="f-auth-mode" value="yes" ${ev.authServices && ev.authServices.present === true ? 'checked' : ''}> Yes</label>
+          <label class="radio-option"><input type="radio" name="f-auth-mode" value="no" ${ev.authServices && ev.authServices.present === false ? 'checked' : ''}> No</label>
+          <label class="radio-option"><input type="radio" name="f-auth-mode" value="unknown" ${!ev.authServices || ev.authServices.present == null ? 'checked' : ''}> Unknown</label>
+        </div>
+        <input type="text" id="f-auth-company" value="${escapeHtml(ev.authServices ? ev.authServices.company : '')}" placeholder="Company on-site (e.g. PSA, Beckett, CGC)" style="margin-top:8px;" ${!(ev.authServices && ev.authServices.present === true) ? 'disabled' : ''}>
+      </div>
+
+      <div class="section-divider"><div class="section-label">More Details (popup window)</div></div>
+      <div class="hint" style="margin-bottom:12px;">Fill any of these in and the event card becomes clickable — visitors will see a detailed popup with this info. Leave everything blank to keep the card as-is.</div>
+      <div class="form-group">
+        <label>About This Show</label>
+        <textarea id="f-about" rows="4" placeholder="A paragraph describing the show — vibe, size, what makes it worth attending.">${escapeHtml((ev.details && ev.details.about) || '')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>At a Glance (one per line, format: <em>Label: Value</em>)</label>
+        <textarea id="f-glance" rows="6" placeholder="Friday Hours: 3:00 PM – 8:00 PM&#10;Saturday Hours: 9:00 AM – 3:00 PM&#10;Parking: Free on-site&#10;Vendor Tables: 60+ expected">${escapeHtml(glanceToText((ev.details && ev.details.atAGlance) || []))}</textarea>
+        <div class="hint">Each line becomes a labeled cell in the popup. Format: <code>Label: Value</code>.</div>
+      </div>
+      <div class="form-group">
+        <label>What to Expect (one bullet per line)</label>
+        <textarea id="f-expect" rows="5" placeholder="Vintage baseball, football, basketball singles&#10;Live breakers throughout both days&#10;Pokémon &amp; TCG vendors">${escapeHtml(((ev.details && ev.details.whatToExpect) || []).join('\n'))}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Location Notes (optional — extra directions/parking info)</label>
+        <textarea id="f-loc-notes" rows="2" placeholder="e.g. Enter through the main gate off Paul Russell Rd. Show is in the East Hall.">${escapeHtml((ev.details && ev.details.locationNotes) || '')}</textarea>
+      </div>
+
+
+      <div class="form-actions">
+        <button type="button" class="btn-primary" id="f-save">💾 ${isNew ? 'Add Show' : 'Save Changes'}</button>
+        <button type="button" id="f-cancel">Cancel</button>
+      </div>
+    `;
+
+    wireFormEvents(ev, isNew);
+  }
+
+  function wireFormEvents(ev, isNew) {
+    const $ = sel => document.getElementById(sel);
+
+    function updateDatePreview() {
+      const s = $('f-start-date').value, e = $('f-end-date').value;
+      const display = formatDateDisplay(s, e);
+      $('date-preview').textContent = display ? `Will display as: "${display}"` : 'Enter a start date to preview.';
+    }
+    $('f-start-date').addEventListener('input', updateDatePreview);
+    $('f-end-date').addEventListener('input', updateDatePreview);
+    updateDatePreview();
+
+    $('f-tbd').addEventListener('change', (e) => {
+      $('f-time').disabled = $('f-time-unknown').checked;
+    });
+    $('f-time-unknown').addEventListener('change', (e) => {
+      $('f-time').disabled = e.target.checked;
+    });
+
+    document.querySelectorAll('input[name="f-entry-mode"]').forEach(r => r.addEventListener('change', () => {
+      $('f-entry-amount').disabled = document.querySelector('input[name="f-entry-mode"]:checked').value !== 'amount';
+    }));
+    document.querySelectorAll('input[name="f-vendor-mode"]').forEach(r => r.addEventListener('change', () => {
+      $('f-vendor-amount').disabled = document.querySelector('input[name="f-vendor-mode"]:checked').value !== 'amount';
+    }));
+    document.querySelectorAll('input[name="f-auth-mode"]').forEach(r => r.addEventListener('change', () => {
+      const mode = document.querySelector('input[name="f-auth-mode"]:checked').value;
+      $('f-auth-company').disabled = mode !== 'yes';
+      if (mode !== 'yes') $('f-auth-company').value = '';
+    }));
+
+    $('f-website-url').addEventListener('blur', () => {
+      if (!$('f-website-label').value.trim() && $('f-website-url').value.trim()) {
+        $('f-website-label').value = autoWebsiteLabel($('f-website-url').value.trim());
+      }
+    });
+
+    $('f-geocode').addEventListener('click', async () => {
+      const addr = $('f-location').value.trim();
+      const resultEl = $('geo-result');
+      if (!addr) { resultEl.textContent = 'Enter an address first.'; resultEl.className = 'geo-result err'; return; }
+      resultEl.textContent = 'Looking up…';
+      resultEl.className = 'geo-result pending';
+      try {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&q=${encodeURIComponent(addr)}`;
+        const r = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        const data = await r.json();
+        if (!data || !data.length) { resultEl.textContent = "Couldn't find that address — try adding a city/state/ZIP."; resultEl.className = 'geo-result err'; return; }
+        ev._foundLat = parseFloat(data[0].lat);
+        ev._foundLng = parseFloat(data[0].lon);
+        resultEl.textContent = `Found: ${ev._foundLat.toFixed(4)}, ${ev._foundLng.toFixed(4)} ✓`;
+        resultEl.className = 'geo-result ok';
+      } catch (err) {
+        resultEl.textContent = 'Lookup failed — check your connection.';
+        resultEl.className = 'geo-result err';
+      }
+    });
+    // seed found coords from existing values so "save without re-searching" keeps them
+    ev._foundLat = ev.lat;
+    ev._foundLng = ev.lng;
+
+    $('f-cancel').addEventListener('click', () => {
+      selectedId = null;
+      renderList();
+      renderForm(null);
+    });
+
+    $('f-save').addEventListener('click', () => {
+      const name = $('f-name').value.trim();
+      const tbd = $('f-tbd').checked;
+      const startDate = $('f-start-date').value;
+      const location = $('f-location').value.trim();
+
+      let hasError = false;
+      clearFieldErrors();
+      if (!name && !tbd) { markFieldError('f-name', 'Give this show a name, or check "Details still TBD".'); hasError = true; }
+      if (!startDate) { markFieldError('f-start-date', 'Start date is required.'); hasError = true; }
+      if (!location) { markFieldError('f-location', 'Venue/address is required (needed for the map).'); hasError = true; }
+      if (ev._foundLat == null || ev._foundLng == null) {
+        markFieldError('f-geocode', null);
+        $('geo-result').textContent = 'Click "Find coordinates" before saving.';
+        $('geo-result').className = 'geo-result err';
+        hasError = true;
+      }
+      if (hasError) { toast('Please fix the highlighted fields.', true); return; }
+
+      const endDate = $('f-end-date').value;
+      const entryMode = document.querySelector('input[name="f-entry-mode"]:checked').value;
+      const vendorMode = document.querySelector('input[name="f-vendor-mode"]:checked').value;
+
+      const updated = {
+        id: ev.id,
+        name: name,
+        startDate, endDate,
+        dateDisplay: formatDateDisplay(startDate, endDate),
+        time: $('f-time-unknown').checked ? '' : $('f-time').value.trim(),
+        timeUnknown: $('f-time-unknown').checked,
+        location,
+        lat: ev._foundLat, lng: ev._foundLng,
+        entryFee: entryMode === 'amount' ? $('f-entry-amount').value.trim() : (entryMode === 'free' ? '$0' : ''),
+        entryFree: entryMode === 'free',
+        vendorFee: vendorMode === 'amount' ? $('f-vendor-amount').value.trim() : '',
+        websiteUrl: $('f-website-url').value.trim(),
+        websiteLabel: $('f-website-label').value.trim() || autoWebsiteLabel($('f-website-url').value.trim()),
+        organizer: $('f-organizer').value.trim() || (tbd ? 'Unknown' : ''),
+        tbd,
+        authServices: (() => {
+          const mode = document.querySelector('input[name="f-auth-mode"]:checked').value;
+          return {
+            present: mode === 'yes' ? true : mode === 'no' ? false : null,
+            company: mode === 'yes' ? $('f-auth-company').value.trim() : '',
+          };
+        })(),
+        details: {
+          about: $('f-about').value.trim(),
+          atAGlance: textToGlance($('f-glance').value),
+          whatToExpect: textToBullets($('f-expect').value),
+          locationNotes: $('f-loc-notes').value.trim(),
+        },
+      };
+
+      if (isNew) {
+        events.push(updated);
+        toast('Show added — remember to save to index.html');
+      } else {
+        const idx = events.findIndex(e2 => e2.id === ev.id);
+        events[idx] = updated;
+        toast('Show updated — remember to save to index.html');
+      }
+      dirty = true;
+      selectedId = updated.id;
+      renderList();
+      renderForm(updated.id);
+    });
+  }
+
+  function markFieldError(id, msg) {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('field-error');
+  }
+  function clearFieldErrors() {
+    document.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
+  }
+</script>
+</body>
+</html>
